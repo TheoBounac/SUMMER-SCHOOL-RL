@@ -13,12 +13,12 @@
 
 
 <table align="center" style="border-collapse:collapse;">
-<th style="width:50%; text-align:center;">
+<th style="width:30%; text-align:center;">
   <div style="display:inline-block; width:200px;">Deploy on Mujoco</div>
 </th>
 
   <tr>
-    <td style="width:50%; text-align:center;">
+    <td style="width:30%; text-align:center;">
       <img src="doc/gif3.gif" style="width:100%; display:block; margin:auto;">
     </td>
 

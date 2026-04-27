@@ -1,4 +1,4 @@
-# SUMMER-SCHOOL-RL
+# # <h2 align="center">SUMMER-SCHOOL-RL</h2> 
  <p align="center">
   <img src="doc/im3.png" width="1000">
   <br>

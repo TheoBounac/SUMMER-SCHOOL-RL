@@ -1,12 +1,12 @@
-<table align="center">
+<table align="center" style="border-collapse:collapse; border:none;">
   <tr>
-    <td style="width:80px; vertical-align:middle;">
-      <img src="doc/summer.png" width="60">
+    <td style="width:120px; border:none; vertical-align:middle;">
+      <img src="doc/summer.png" width="100">
     </td>
-    <td style="text-align:center;">
-      <h2>SUMMER-SCHOOL-RL</h2>
+    <td style="text-align:center; border:none;">
+      <h2 style="margin:0;">SUMMER-SCHOOL-RL</h2>
     </td>
-    <td style="width:80px;"></td>
+    <td style="width:120px; border:none;"></td>
   </tr>
 </table>
 

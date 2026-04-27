@@ -32,23 +32,23 @@
 
 ```
 SUMMER-SCHOOL-RL/
-├── main.py
-├── 1.Unitree_mujoco/
-│   ├── simulate_python
-│   ├── terrain_tool
-│   └── unitree_robots
-|
-├── 2.Deploy_python/
-│   ├── common
-│   ├── mini_examples
-│   ├── policy
-│   ├── deploy.py
-│   └── deploy_to_fill.py
-│  
-├── cyclonedds/
-├── doc/
-├── unitree_sdk2_python/
-└── README.md
+  ├── main.py
+  ├── 1.Unitree_mujoco/
+  │   ├── simulate_python
+  │   ├── terrain_tool
+  │   └── unitree_robots
+  |
+  ├── 2.Deploy_python/
+  │   ├── common
+  │   ├── mini_examples
+  │   ├── policy
+  │   ├── deploy.py
+  │   └── deploy_to_fill.py
+  │  
+  ├── cyclonedds/
+  ├── doc/
+  ├── unitree_sdk2_python/
+  └── README.md
 ```
 
 ---

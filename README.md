@@ -75,15 +75,10 @@ G1_deploy_python/
 
 ## 1️⃣ 🐍 Create & prepare the Conda environment
 
-Create your workspace :
-```bash
-mkdir -p ~/G1
-```
-
 Create the env conda :
 ```bash
-conda create -n env_g1_deploy python=3.11
-conda activate env_g1_deploy
+conda create -n go2_rl python=3.11
+conda activate go2_rl
 ```
 
 Install libraries :
@@ -91,9 +86,12 @@ Install libraries :
 pip install -U torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
 pip install rich
 pip install scipy
-pip insatll redis
-pip install pyyaml
-pip install tqdm
+```
+
+Clone project :
+```bash
+cd ~/
+git clone https://github.com/TheoBounac/SUMMER-SCHOOL-RL.git
 ```
 
 ## 2️⃣ 🤖 Install Unitree SDK2 Python
@@ -101,34 +99,19 @@ pip install tqdm
 Install [Unitree SDK2 Python](https://github.com/unitreerobotics/unitree_sdk2_python) in the G1 folder. Tutorial :
 
 ```bash
-cd ~/G1
+cd ~/SUMMER-SCHOOL-RL/unitree_sdk2_python
 sudo apt install python3-pip
-git clone https://github.com/unitreerobotics/unitree_sdk2_python.git
-cd unitree_sdk2_python
-```
-
-you must now download cyclonedds :
-
-```bash
-cd ~/G1
-git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x 
-cd cyclonedds && mkdir build install && cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=../install
-cmake --build . --target install
-```
-Then add to path :
-
-```bash
-cd ~/G1/unitree_sdk2_python
-export CYCLONEDDS_HOME="~/G1/cyclonedds/install"  # MODIFY THE PATH IF YOU DOWNLOADED CYCLONEDDS IN ANOTHER PLACE
+export CYCLONEDDS_HOME=~/SUMMER-SCHOOL-RL/cyclonedds/install
 pip3 install -e .
 ```
 
-## 3️⃣ 🚀 Run the code
+## 3️⃣ 🏗️ Launch the Mujoco simulation
 
 ```bash
-cd ~/G1/G1_deploy_python
-python3 main.py
+cd ~/SUMMER-SCHOOL-RL/1.Unitree_mujoco
+pip3 install mujoco
+pip3 install pygame
+python simulate_python/unitree_mujoco_virtual_remote_ui2.py
 ```
 You should see :
 
@@ -137,31 +120,6 @@ You should see :
   <br>
  </p>
  
-
----
-## 4️⃣ 🏗️ Launch the Mujoco simulation
-
-Now you should install [Unitree Mujoco](https://github.com/unitreerobotics/unitree_mujoco) in the G1 folder. Tutorial :
-
-```bash
-cd ~/G1
-pip3 install mujoco
-pip3 install pygame
-git clone https://github.com/unitreerobotics/unitree_mujoco.git
-```
-You must replace the config files in unitree_mujoco/simulate_python by those in config_mujoco like this :
-
- <p align="center">
-  <img src="doc/im7.png" width="600">
-  <br>
- </p>
-
-Now connect the remote to your PC and run the simulation with :
-```bash
-cd unitree_mujoco/simulate_python
-python3 unitree_mujoco.py
-```
-
 You should see :
  <p align="center">
   <img src="doc/im5.png" width="700">
@@ -171,57 +129,15 @@ You should see :
 Press `9` to deactivate the elastic band and `7` / `8` to raise / lower the robot.
 Use the remote to navigate in the UI.
 
-
-
 ---
-## 5️⃣ 🤖 Run it on Real robot G1
+## 4️⃣ 🚀 Launch the deploy.py code
 
-1. **Connect the robot with ethernet**
-   
-   Turn on the robot and connect it to your PC using an Ethernet cable.
-   Go to Settings/Network and then IPv4. Fill the gaps as follows :
-   
-   <p align="center">
-    <img src="doc/ipv4.png" width="600">
-    <br>
-   </p>
-2. **Collect the network interface**
-
-   Type in the terminal, and collect the adress :
-
-   ```bash
-   ifconfig
-   ```
-   <p align="center">
-    <img src="doc/net.png" width="600">
-    <br>
-   </p>
-   
-3. **Switch the code in real mode**
- In controller.py, just switch to real mode and put your network interface like this :
-
-<p align="center">
-    <img src="doc/im8.png" width="500">
-    <br>
-   </p>
-
-  4. **Run the code**
-     Run the code with :
 ```bash
-cd ~/G1/G1_deploy_python
-python3 main.py
+cd ~/SUMMER-SCHOOL-RL/2.Deploy_python
+python deploy.py
 ```
-You should see :
 
- <p align="center">
-  <img src="doc/im4.png" width="600">
-  <br>
- </p>
 
- ---
-⚠️ **Safety Notice:**  
- At any time just press `SELECT` on the unitree remote controller to trigger emergency mode. Be carefull, the robot will **FALL**.
-   
 ---
 
 ##  Links

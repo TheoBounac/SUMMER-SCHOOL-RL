@@ -12,8 +12,6 @@ wandb/
 checkpoints/
 outputs/
 
-*.pt
-*.pth
 *.pkl
 *.onnx
 

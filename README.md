@@ -1,4 +1,16 @@
-# <h2 align="center">SUMMER-SCHOOL-RL</h2> 
+<table align="center">
+  <tr>
+    <td style="width:80px; vertical-align:middle;">
+      <img src="doc/summer.png" width="60">
+    </td>
+    <td style="text-align:center;">
+      <h2>SUMMER-SCHOOL-RL</h2>
+    </td>
+    <td style="width:80px;"></td>
+  </tr>
+</table>
+
+
  <p align="center">
   <img src="doc/im3.png" width="1000">
   <br>

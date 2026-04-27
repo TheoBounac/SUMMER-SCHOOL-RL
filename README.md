@@ -133,7 +133,11 @@ Press `9` to deactivate the elastic band and `7` / `8` to raise / lower the robo
 cd ~/SUMMER-SCHOOL-RL/2.Deploy_python
 python deploy.py
 ```
-
+You should see :
+ <p align="center">
+  <img src="doc/im2.png" width="600">
+  <br>
+ </p>
 
 ---
 

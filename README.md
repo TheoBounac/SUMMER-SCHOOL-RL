@@ -125,7 +125,6 @@ You should see :
  </p>
  
 Press `9` to deactivate the elastic band and `7` / `8` to raise / lower the robot.
-Use the remote to navigate in the UI.
 
 ---
 ## 4️⃣ 🚀 Launch the deploy.py code

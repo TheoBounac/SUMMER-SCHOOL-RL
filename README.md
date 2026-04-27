@@ -26,46 +26,29 @@
 </table>
 
 
----
-## Project overview
-
-This project implements a complete deployment guide:
-
- - 🎮 How to deploy Reinforcement Learning (RL) policies in **Mujoco**
-
- - 🤖 How to deploy models on the **real G1 robot** via  Unitree SDK
-
-Reinforcement Learning models are trained with : [unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab) for Locomotion, and [TWIST](https://github.com/YanjieZe/TWIST) for Teleoperated Whole-Body Control. 
-
-The project combines **Python + Unitree SDK + Mujoco + IsaacLab + Unitree_rl_lab + Twist**, enabling the deployment of RL policies on the real robot with an Interactive **UI** and **Safety measures**.
 
 ---
 ## 📁 Architecture
 
 ```
-G1_deploy_python/
+SUMMER-SCHOOL-RL/
 ├── main.py
-├── controller/
-│   ├── buttons.py
-│   ├── controller.py
-│   ├── security.py
-│   ├── server_high_level_motion_lib.py
-│   └── UI.py
-├── states/
-│   ├── fsm.py
-│   ├── base_state.py
-│   ├── state_passive.py
-│   ├── state_default_static.py
-│   ├── state_velocity.py
-│   ├── state_mocap.py
-│   └── emergency.py
-├── policies/
-│   └── locomotion_policies/
-│   └── mimici_policies/
-├── mocap_files/
+├── 1.Unitree_mujoco/
+│   ├── simulate_python
+│   ├── terrain_tool
+│   └── unitree_robots
+|
+├── 2.Deploy_python/
+│   ├── common
+│   ├── mini_examples
+│   ├── policy
+│   ├── deploy.py
+│   └── deploy_to_fill.py
+│  
+├── cyclonedds/
 ├── doc/
-├── common/
-└── assets/
+├── unitree_sdk2_python/
+└── README.md
 ```
 
 ---

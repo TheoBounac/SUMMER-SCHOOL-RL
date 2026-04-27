@@ -114,13 +114,13 @@ python simulate_python/unitree_mujoco_virtual_remote_ui2.py
 You should see :
 
  <p align="center">
-  <img src="doc/im4.png" width="600">
+  <img src="doc/im4.png" width="800">
   <br>
  </p>
  
 You should see :
  <p align="center">
-  <img src="doc/im5.png" width="700">
+  <img src="doc/im5.png" width="600">
   <br>
  </p>
  

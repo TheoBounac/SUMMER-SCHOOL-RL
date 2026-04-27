@@ -20,7 +20,7 @@ from common.rotation_helper import get_gravity_orientation
 from common.remote_controller import RemoteController, KeyMap
 from common.dashboard_panels import DashboardMixin
 
-POLICY_PATH = LEGGED_GYM_ROOT_DIR / "3.Deploy_python/policy/policy.pt"
+POLICY_PATH = LEGGED_GYM_ROOT_DIR / "2.Deploy_python/policy/policy.pt"
 NUM_ACTIONS = 12
 NUM_OBS = 45
 CONTROL_DT = 0.02

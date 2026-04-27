@@ -1,12 +1,12 @@
 <table align="center" style="border-collapse:collapse; border-spacing:0; border:none;">
   <tr style="border:none;">
     <td style="width:300px; border:none; padding:0; vertical-align:middle;">
-      <img src="doc/summer.png" width="100">
+      <img src="doc/summer.png" width="300">
     </td>
     <td style="text-align:center; border:none; padding:0;">
       <h2 style="margin:0;">SUMMER-SCHOOL-RL</h2>
     </td>
-    <td style="width:120px; border:none; padding:0;"></td>
+    <td style="width:300px; border:none; padding:0;"></td>
   </tr>
 </table>
 

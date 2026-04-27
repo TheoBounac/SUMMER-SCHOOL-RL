@@ -1,22 +1,13 @@
-<table align="center" style="border-collapse:collapse; border-spacing:0; border:none;">
-  <tr style="border:none;">
-    <td style="width:400px; border:none; padding:0; vertical-align:middle;">
-      <img src="doc/summer.png" width="350">
-    </td>
-    <td style="text-align:center; border:none; padding:0;">
-      <h2 style="margin:0;">SUMMER-SCHOOL-RL</h2>
-    </td>
-    <td style="width:300px; border:none; padding:0;"></td>
-  </tr>
-</table>
-
+<p align="center">
+  <img src="doc/summer.png" width="400">
+</p>
 
  <p align="center">
   <img src="doc/im3.png" width="1000">
   <br>
  </p>
  
-# <h2 align="center">Go2 RL Deploy Python</h2>
+# <h2 align="center">SUMMER-SCHOOL-RL</h2>
 
 **This repository provides a Python deployment framework for the Unitree Go2 quadrupped robot, designed to run reinforcement-learning policies both in simulation and on real hardware.**
 **It supports SIM-to-SIM deployment in MuJoCo as well as SIM-to-REAL execution on the physical Go2 robot, with a focus on UI control.**

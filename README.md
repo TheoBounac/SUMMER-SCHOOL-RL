@@ -69,16 +69,6 @@ G1_deploy_python/
 ```
 
 ---
-## ⚙️ System Requirements
-
-|  Component |  Recommended Version |
-|--------------|------------------------|
-| Go2 robot (Unitree) | Edu version with feet sensors |
-| **Ubuntu** | 22.04 LTS |
-| **Python** | 3.10+ |
-| **ROS 2** | Humble |
-| **CUDA** | 11.8+ |
----
 
 ---
 <h2 align="center">🔧 Installation Guides🔧</h2> 

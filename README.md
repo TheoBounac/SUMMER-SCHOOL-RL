@@ -19,7 +19,7 @@
 
   <tr>
     <td style="width:30%; text-align:center;">
-      <img src="doc/gif3.gif" style="width:100%; display:block; margin:auto;">
+      <img src="doc/gif3.gif" style="width:300px; display:block; margin:auto;">
     </td>
 
   </tr>

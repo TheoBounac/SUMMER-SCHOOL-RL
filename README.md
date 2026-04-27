@@ -96,8 +96,6 @@ git clone https://github.com/TheoBounac/SUMMER-SCHOOL-RL.git
 
 ## 2️⃣ 🤖 Install Unitree SDK2 Python
 
-Install [Unitree SDK2 Python](https://github.com/unitreerobotics/unitree_sdk2_python) in the G1 folder. Tutorial :
-
 ```bash
 cd ~/SUMMER-SCHOOL-RL/unitree_sdk2_python
 sudo apt install python3-pip

@@ -135,7 +135,7 @@ python deploy.py
 ```
 You should see :
  <p align="center">
-  <img src="doc/im2.png" width="400">
+  <img src="doc/im2.png" width="100">
   <br>
  </p>
 

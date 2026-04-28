@@ -5,12 +5,13 @@ from threading import Thread
 import threading
 
 from unitree_sdk2py.core.channel import ChannelFactoryInitialize
-from unitree_sdk2py_bridge import UnitreeSdk2Bridge, ElasticBand
+from unitree_sdk2py_bridge_virtual_remote_ui2 import UnitreeSdk2Bridge, ElasticBand, VirtualRemoteUI
 
 import config
 
 
 locker = threading.Lock()
+shutdown_event = threading.Event()
 
 mj_model = mujoco.MjModel.from_xml_path(config.ROBOT_SCENE)
 mj_data = mujoco.MjData(mj_model)
@@ -26,6 +27,7 @@ if config.ENABLE_ELASTIC_BAND:
         mj_model, mj_data, key_callback=elastic_band.MujuocoKeyCallback
     )
 else:
+    elastic_band = None
     viewer = mujoco.viewer.launch_passive(mj_model, mj_data)
 
 mj_model.opt.timestep = config.SIMULATE_DT
@@ -34,19 +36,19 @@ dim_motor_sensor_ = 3 * num_motor_
 
 time.sleep(0.2)
 
+ChannelFactoryInitialize(config.DOMAIN_ID, config.INTERFACE)
+unitree = UnitreeSdk2Bridge(mj_model, mj_data)
+unitree.SetupVirtualRemote()
+virtual_ui = VirtualRemoteUI(unitree.GetVirtualRemoteState())
+
+if config.PRINT_SCENE_INFORMATION:
+    unitree.PrintSceneInformation()
+
 
 def SimulationThread():
     global mj_data, mj_model
 
-    ChannelFactoryInitialize(config.DOMAIN_ID, config.INTERFACE)
-    unitree = UnitreeSdk2Bridge(mj_model, mj_data)
-
-    if config.USE_JOYSTICK:
-        unitree.SetupJoystick(device_id=0, js_type=config.JOYSTICK_TYPE)
-    if config.PRINT_SCENE_INFORMATION:
-        unitree.PrintSceneInformation()
-
-    while viewer.is_running():
+    while viewer.is_running() and not shutdown_event.is_set():
         step_start = time.perf_counter()
 
         locker.acquire()
@@ -68,7 +70,7 @@ def SimulationThread():
 
 
 def PhysicsViewerThread():
-    while viewer.is_running():
+    while viewer.is_running() and not shutdown_event.is_set():
         locker.acquire()
         viewer.sync()
         locker.release()
@@ -76,8 +78,16 @@ def PhysicsViewerThread():
 
 
 if __name__ == "__main__":
-    viewer_thread = Thread(target=PhysicsViewerThread)
-    sim_thread = Thread(target=SimulationThread)
+    viewer_thread = Thread(target=PhysicsViewerThread, daemon=True)
+    sim_thread = Thread(target=SimulationThread, daemon=True)
 
     viewer_thread.start()
     sim_thread.start()
+
+    virtual_ui.start()
+    try:
+        while viewer.is_running() and virtual_ui.pump_once():
+            time.sleep(0.005)
+    finally:
+        shutdown_event.set()
+        virtual_ui.stop()

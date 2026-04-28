@@ -129,7 +129,7 @@ You should see :
 
 ##  Links
 
-These are the repositories I used for my project :
+These are the repositories we used for this workshop :
 
 | 🔗 Resources | 📍 Link |
 |--------------|---------|

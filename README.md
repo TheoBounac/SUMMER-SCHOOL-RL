@@ -9,7 +9,7 @@
  
 # <h2 align="center">SUMMER-SCHOOL-RL</h2>
 
-**This repository provides a Python deployment framework for the Unitree Go2 quadrupped robot, designed to run reinforcement-learning policies in simulation like it would be on real hardware.**
+**This repository provides a Python deployment framework for the Unitree Go2 quadrupped robot, designed to run Reinforcement-Learning policies in simulation like it would be on real hardware.**
 **It supports SIM-to-SIM deployment in MuJoCo, with a focus on UI control.**
 
 **It deploys RL policies trained for locomotion**

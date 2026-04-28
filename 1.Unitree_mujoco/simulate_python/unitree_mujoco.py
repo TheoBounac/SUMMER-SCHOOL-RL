@@ -5,7 +5,7 @@ from threading import Thread
 import threading
 
 from unitree_sdk2py.core.channel import ChannelFactoryInitialize
-from unitree_sdk2py_bridge_virtual_remote_ui2 import UnitreeSdk2Bridge, ElasticBand, VirtualRemoteUI
+from unitree_sdk2py_bridge import UnitreeSdk2Bridge, ElasticBand, VirtualRemoteUI
 
 import config
 

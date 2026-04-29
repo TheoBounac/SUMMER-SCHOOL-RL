@@ -95,7 +95,7 @@ pip3 install -e .
 cd ~/SUMMER-SCHOOL-RL/1.Unitree_mujoco
 pip3 install mujoco
 pip3 install pygame
-python simulate_python/unitree_mujoco_virtual_remote_ui2.py
+python simulate_python/unitree_mujoco.py
 ```
 You should see :
 
@@ -115,7 +115,9 @@ Press `9` to deactivate the elastic band and `7` / `8` to raise / lower the robo
 ---
 ## 4️⃣ 🚀 Launch the deploy.py code
 
+In an other terminal:
 ```bash
+conda activate go2_rl
 cd ~/SUMMER-SCHOOL-RL/2.Deploy_python
 python deploy.py
 ```

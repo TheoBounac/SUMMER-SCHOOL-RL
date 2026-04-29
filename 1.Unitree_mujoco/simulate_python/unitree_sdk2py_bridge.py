@@ -98,7 +98,7 @@ class VirtualRemoteState:
 
 
 class VirtualRemoteUI:
-    def __init__(self, remote_state, width=980, height=680, deadzone=0.05):
+    def __init__(self, remote_state, width=430, height=250, deadzone=0.05):
         self.remote_state = remote_state
         self.width = width
         self.height = height
@@ -110,16 +110,16 @@ class VirtualRemoteUI:
         self.small_font = None
         self.running = False
 
-        self.stick_center = np.array([740.0, 390.0], dtype=np.float32)
-        self.stick_radius = 165.0
+        self.stick_center = np.array([330.0, 145.0], dtype=np.float32)
+        self.stick_radius = 65.0
         self.stick_knob = self.stick_center.copy()
         self.dragging_stick = False
 
         self.button_rects = {
-            "A": pygame.Rect(90, 180, 120, 120),
-            "E": pygame.Rect(250, 180, 120, 120),
-            "SELECT": pygame.Rect(90, 395, 140, 70),
-            "START": pygame.Rect(250, 395, 140, 70),
+            "A": pygame.Rect(35, 75, 50, 50),
+            "E": pygame.Rect(105, 75, 50, 50),
+            "SELECT": pygame.Rect(35, 160, 65, 30),
+            "START": pygame.Rect(105, 160, 65, 30),
         }
 
         self.mouse_pressed_button = None
@@ -129,11 +129,10 @@ class VirtualRemoteUI:
         pygame.display.init()
         pygame.font.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Unitree Virtual Remote")
         self.clock = pygame.time.Clock()
-        self.font = pygame.font.SysFont("Arial", 34)
-        self.small_font = pygame.font.SysFont("Arial", 24)
+        self.font = pygame.font.SysFont("Arial", 17)
+        self.small_font = pygame.font.SysFont("Arial", 13)
         self.running = True
 
     def stop(self):
@@ -148,6 +147,7 @@ class VirtualRemoteUI:
     def _clamp_stick(self, pos):
         delta = np.array(pos, dtype=np.float32) - self.stick_center
         norm = np.linalg.norm(delta)
+
         if norm > self.stick_radius and norm > 1e-6:
             delta = delta / norm * self.stick_radius
 
@@ -192,35 +192,43 @@ class VirtualRemoteUI:
             snap = self.remote_state.snapshot()
             if snap["rx"] < 0:
                 self.remote_state.set_axes(rx=0.0)
+
         elif key == pygame.K_e:
             self.remote_state.set_button(KeyMap.B, 0)
             snap = self.remote_state.snapshot()
             if snap["rx"] > 0:
                 self.remote_state.set_axes(rx=0.0)
+
         elif key == pygame.K_s:
             self.remote_state.set_button(KeyMap.select, 0)
+
         elif key == pygame.K_d:
             self.remote_state.set_button(KeyMap.start, 0)
 
     def _apply_mouse_button_state(self, name, pressed):
         if name == "A":
             self.remote_state.set_button(KeyMap.A, pressed)
+
             if pressed:
                 self.remote_state.set_axes(rx=-1.0)
             else:
                 snap = self.remote_state.snapshot()
                 if snap["rx"] < 0:
                     self.remote_state.set_axes(rx=0.0)
+
         elif name == "E":
             self.remote_state.set_button(KeyMap.B, pressed)
+
             if pressed:
                 self.remote_state.set_axes(rx=1.0)
             else:
                 snap = self.remote_state.snapshot()
                 if snap["rx"] > 0:
                     self.remote_state.set_axes(rx=0.0)
+
         elif name == "SELECT":
             self.remote_state.set_button(KeyMap.select, pressed)
+
         elif name == "START":
             self.remote_state.set_button(KeyMap.start, pressed)
 
@@ -241,12 +249,13 @@ class VirtualRemoteUI:
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 clicked = self._find_clicked_button(event.pos)
+
                 if clicked is not None:
                     self.mouse_pressed_button = clicked
                     self._apply_mouse_button_state(clicked, True)
                 else:
                     mouse = np.array(event.pos, dtype=np.float32)
-                    if np.linalg.norm(mouse - self.stick_center) <= self.stick_radius + 20:
+                    if np.linalg.norm(mouse - self.stick_center) <= self.stick_radius + 15:
                         self.dragging_stick = True
                         self._clamp_stick(event.pos)
 
@@ -254,6 +263,7 @@ class VirtualRemoteUI:
                 if self.mouse_pressed_button is not None:
                     self._apply_mouse_button_state(self.mouse_pressed_button, False)
                     self.mouse_pressed_button = None
+
                 if self.dragging_stick:
                     self._reset_stick()
 
@@ -269,26 +279,46 @@ class VirtualRemoteUI:
         self.screen.fill((24, 26, 30))
 
         title = self.font.render("Virtual Unitree Remote", True, (245, 245, 245))
-        title_rect = title.get_rect(center=(self.width // 2, 52))
+        title_rect = title.get_rect(center=(self.width // 2, 22))
         self.screen.blit(title, title_rect)
 
-        pygame.draw.circle(self.screen, (72, 76, 84), self.stick_center.astype(int), int(self.stick_radius), 4)
-        pygame.draw.circle(self.screen, (50, 54, 62), self.stick_center.astype(int), int(self.stick_radius - 18))
+        pygame.draw.circle(
+            self.screen,
+            (72, 76, 84),
+            self.stick_center.astype(int),
+            int(self.stick_radius),
+            3,
+        )
+
+        pygame.draw.circle(
+            self.screen,
+            (50, 54, 62),
+            self.stick_center.astype(int),
+            int(self.stick_radius - 8),
+        )
+
         pygame.draw.line(
             self.screen,
             (96, 100, 110),
             (int(self.stick_center[0] - self.stick_radius), int(self.stick_center[1])),
             (int(self.stick_center[0] + self.stick_radius), int(self.stick_center[1])),
-            2,
+            1,
         )
+
         pygame.draw.line(
             self.screen,
             (96, 100, 110),
             (int(self.stick_center[0]), int(self.stick_center[1] - self.stick_radius)),
             (int(self.stick_center[0]), int(self.stick_center[1] + self.stick_radius)),
-            2,
+            1,
         )
-        pygame.draw.circle(self.screen, (155, 165, 185), self.stick_knob.astype(int), 36)
+
+        pygame.draw.circle(
+            self.screen,
+            (155, 165, 185),
+            self.stick_knob.astype(int),
+            15,
+        )
 
         button_colors = {
             "A": (200, 90, 90),
@@ -296,6 +326,7 @@ class VirtualRemoteUI:
             "SELECT": (130, 100, 210),
             "START": (90, 175, 120),
         }
+
         active_map = {
             "A": snap["buttons"][KeyMap.A],
             "E": snap["rx"] > 0.5,
@@ -305,14 +336,18 @@ class VirtualRemoteUI:
 
         for name, rect in self.button_rects.items():
             color = button_colors[name] if active_map[name] else (82, 86, 94)
-            pygame.draw.rect(self.screen, color, rect, border_radius=16)
-            pygame.draw.rect(self.screen, (210, 210, 210), rect, width=2, border_radius=16)
+
+            pygame.draw.rect(self.screen, color, rect, border_radius=7)
+            pygame.draw.rect(self.screen, (210, 210, 210), rect, width=1, border_radius=7)
+
             label = self.font.render(name, True, (255, 255, 255))
             label_rect = label.get_rect(center=rect.center)
             self.screen.blit(label, label_rect)
 
         wz_label = self.small_font.render("Rotation Wz", True, (220, 220, 220))
-        wz_rect = wz_label.get_rect(center=((self.button_rects["A"].centerx + self.button_rects["E"].centerx) // 2, 325))
+        wz_rect = wz_label.get_rect(
+            center=((self.button_rects["A"].centerx + self.button_rects["E"].centerx) // 2, 140)
+        )
         self.screen.blit(wz_label, wz_rect)
 
         pygame.display.flip()

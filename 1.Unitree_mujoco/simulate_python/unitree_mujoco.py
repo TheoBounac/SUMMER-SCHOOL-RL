@@ -12,7 +12,7 @@ import config
 locker = threading.Lock()
 shutdown_event = threading.Event()
 
-mj_model = mujoco.MjModel.from_xml_path(config.ROBOT_SCENE)
+mj_model = mujoco.MjModel.from_xml_path(str(config.ROBOT_SCENE))
 mj_data = mujoco.MjData(mj_model)
 
 

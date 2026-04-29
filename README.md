@@ -138,11 +138,11 @@ python deploy.py
 ```
 You should see :
 <p align="center">
-  <img src="doc/obs.png" width="1100" style="display:block; margin-bottom:-600px;">
+  <img src="doc/obs.png" width="1100" style="display:block; margin-bottom:-1000px;">
 </p>
 
 <p align="center">
-  <img src="doc/policy.png" width="1100" style="display:block; margin-bottom:-600px;">
+  <img src="doc/policy.png" width="1100" style="display:block; margin-bottom:-1000px;">
 </p>
 
 <p align="center">

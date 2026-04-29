@@ -1,5 +1,8 @@
+from pathlib import Path
+LEGGED_GYM_ROOT_DIR = Path(__file__).resolve().parents[1]
+
 ROBOT = "go2" # Robot name, "go2", "b2", "b2w", "h1", "go2w", "g1" 
-ROBOT_SCENE = "../unitree_robots/" + ROBOT + "/scene_terrain.xml" # Robot scene
+ROBOT_SCENE = LEGGED_GYM_ROOT_DIR / "go2/scene_terrain.xml" # Robot scene
 DOMAIN_ID = 0 # Domain id
 INTERFACE = "lo" # Interface 
 

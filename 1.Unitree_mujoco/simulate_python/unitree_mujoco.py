@@ -9,7 +9,6 @@ from unitree_sdk2py_bridge import UnitreeSdk2Bridge, ElasticBand, VirtualRemoteU
 
 import config
 
-
 locker = threading.Lock()
 shutdown_event = threading.Event()
 

@@ -123,7 +123,7 @@ python deploy.py
 ```
 You should see :
  <p align="center">
-  <img src="doc/im2.png" width="1100">
+  <img src="doc/fill.png" width="1100">
   <br>
  </p>
 
@@ -138,6 +138,13 @@ Now you must follow the tasks and fill the `deploy.py` file:
   <img src="doc/motor.png" width="1100" style="margin-top:-800px;">
 </div>
 
+
+When you completed all the tasks, the robot should walk and you should see :
+ <p align="center">
+  <img src="doc/im2.png" width="1100">
+  <br>
+ </p>
+ 
 ---
 
 ##  Links

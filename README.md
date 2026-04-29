@@ -137,20 +137,17 @@ cd ~/SUMMER-SCHOOL-RL/2.Deploy_python
 python deploy.py
 ```
 You should see :
- <p align="center">
-  <img src="doc/obs.png" width="1100">
-  <br>
- </p>
+<p align="center">
+  <img src="doc/obs.png" width="1100" style="display:block; margin-bottom:-80px;">
+</p>
 
-  <p align="center">
-  <img src="doc/policy.png" width="1100">
-  <br>
- </p>
+<p align="center">
+  <img src="doc/policy.png" width="1100" style="display:block; margin-bottom:-80px;">
+</p>
 
-  <p align="center">
-  <img src="doc/motor.png" width="1100">
-  <br>
- </p>
+<p align="center">
+  <img src="doc/motor.png" width="1100" style="display:block;">
+</p>
 
 ---
 

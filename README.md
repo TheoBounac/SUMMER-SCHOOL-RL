@@ -128,15 +128,10 @@ You should see :
  </p>
 
 ---
-## 4️⃣ 🚀 Launch the deploy.py code
 
-In an other terminal:
-```bash
-conda activate go2_rl
-cd ~/SUMMER-SCHOOL-RL/2.Deploy_python
-python deploy.py
-```
-You should see :
+
+Now you must follow the tasks and fill the `deploy.py` file:
+
 <div align="center">
   <img src="doc/obs.png" width="1100"><br>
   <img src="doc/policy.png" width="1100" style="margin-top:-800px;"><br>

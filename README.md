@@ -139,8 +139,8 @@ python deploy.py
 You should see :
 <div align="center">
   <img src="doc/obs.png" width="1100"><br>
-  <img src="doc/policy.png" width="1100" style="margin-top:-80px;"><br>
-  <img src="doc/motor.png" width="1100" style="margin-top:-80px;">
+  <img src="doc/policy.png" width="1100" style="margin-top:-800px;"><br>
+  <img src="doc/motor.png" width="1100" style="margin-top:-800px;">
 </div>
 
 ---

@@ -144,12 +144,11 @@ class Controller(DashboardMixin):
         print("Button [A] received, starting policy control.")
         print("Press [SELECT] button to exit.")
 
-
-
-
     def run(self):
+        self.counter += 1
 
-        # ============================== PART 1. OBSERVATION ==================================== #
+
+        # ================================== OBSERVATION ======================================== #
         ################################# USEFUL VARIABLES ########################################
         LEG_JOINT2MOTOR_IDX = [3, 4, 5,                                                           #
                                0, 1, 2,                                                           #
@@ -168,45 +167,31 @@ class Controller(DashboardMixin):
         OBS_SCALES_DOF_POS = 1.0                                                                  #
         OBS_SCALES_DOF_VEL = 0.05                                                                 #
         ###########################################################################################
-    
-        # TODO [1] Read base angular velocity from IMU
-        self.ang_vel = np.array(self.low_state.imu_state.gyroscope, dtype=np.float32)
-
-        # TODO [2] Read quaternion from IMU and Compute gravity orientation from quaternion
-        self.quat = None
-        self.gravity_orientation = None
-
-        # TODO [3] Read command from remote controller
-        if self.use_remote_controller:                                                            
-            self.cmd[0] = self.remote_controller.ly                                               
-            self.cmd[1] = -self.remote_controller.lx                                             
-            self.cmd[2] = -self.remote_controller.rx  
-
-        # TODO [4] Read joint positions and velocities and add the offset
-        self.qj = None
-        self.dqj = None
-        self.qj_obs = None
-        self.dqj_obs = None
-
-        # TODO [5] Read last action
-        self.action = None
-        
-        # TODO [6] Fill the obs with the right observations values
-        self.obs[:3] = None                                         
-        self.obs[3:6] = None
-        self.obs[6:9] = None
-        self.obs[9:21] = None 
-        self.obs[21:33] = None
-        self.obs[33:45] = None 
-
-        # Put it in tensor
-        obs_tensor = torch.from_numpy(self.obs).unsqueeze(0) 
+        self.ang_vel = np.array(self.low_state.imu_state.gyroscope, dtype=np.float32)             #
+                                                                                                  #
+        self.quat = np.array(self.low_state.imu_state.quaternion, dtype=np.float32)               #
+        self.gravity_orientation = np.array(get_gravity_orientation(self.quat), dtype=np.float32) #
+                                                                                                  #
+        if self.use_remote_controller:                                                            #
+            self.cmd[0] = self.remote_controller.ly                                               #
+            self.cmd[1] = -self.remote_controller.lx                                              #
+            self.cmd[2] = -self.remote_controller.rx                                              #
+                                                                                                  #
+        for i in range(12):                                                                       #
+            self.qj[i] = self.low_state.motor_state[LEG_JOINT2MOTOR_IDX[i]].q                     #
+            self.dqj[i] = self.low_state.motor_state[LEG_JOINT2MOTOR_IDX[i]].dq                   #
+                                                                                                  #
+        self.qj_obs = self.qj.copy() - DEFAULT_ANGLES                                             #
+        self.dqj_obs = self.dqj.copy()                                                            #
+                                                                                                  #
+        self.obs[:3] = self.ang_vel * OBS_SCALES_ANG_VEL                                          #
+        self.obs[3:6] = self.gravity_orientation                                                  #
+        self.obs[6:9] = self.cmd * CMD_SCALE                                                      #
+        self.obs[9:21] = self.qj_obs * OBS_SCALES_DOF_POS                                         #
+        self.obs[21:33] = self.dqj_obs * OBS_SCALES_DOF_VEL                                       #
+        self.obs[33:45] = self.action                                                             #
         # ======================================================================================= #
-
-
-
-
-        # //////////////////// REFERENCE DO NOT MODIFY ///////////////////////////// #
+        # ==================== REFERENCE DO NOT MODIFY ============================= #
         self.obs_low_state_ref = self.low_state                                      #
         self.obs_remote_ref = {                                                      #
             "ly": getattr(self.remote_controller, "ly", 0.0),                        #
@@ -214,12 +199,10 @@ class Controller(DashboardMixin):
             "rx": getattr(self.remote_controller, "rx", 0.0),                        #
         }                                                                            #
         self.obs_action_ref = self.action.copy() if self.action is not None else None#
-        # ////////////////////////////////////////////////////////////////////////// #
+        # ========================================================================== #
 
 
-
-
-        # ================================ PART 2. POLICY =================================== #
+        # ==================================== POLICY ======================================= #
         ################################# USEFUL VARIABLES ####################################
         DEFAULT_ANGLES = np.array([                                                           #
                                     0.1,  0.8, -1.5,                                          #
@@ -229,26 +212,16 @@ class Controller(DashboardMixin):
                                   ], dtype=np.float32)                                        #
                                                                                               #
         ACTION_SCALE = 0.25                                                                   #
-        ####################################################################################### 
-
-        # TODO [7] Inference of the policy with the observation tensor                                                                                                                
-        policy_output = None          
-
-        # Put it in the right format for the robot                                           
-        if policy_output is None:
-            self.action = None
-        else:
-            self.action = policy_output[0].detach().cpu().numpy().astype(np.float32).squeeze()   
-
-        # TODO [8] Fill the target command with the policy output (action)                                                                                
-        self.target_dof_pos = None                
+        #######################################################################################
+        obs_tensor = torch.from_numpy(self.obs).unsqueeze(0)                                  #
+        results = self.policy(obs_tensor)                                                     #
+        self.action = results[0].detach().cpu().numpy().astype(np.float32).squeeze()          #
+                                                                                              #
+        self.target_dof_pos = DEFAULT_ANGLES + self.action * ACTION_SCALE                     #
         # =================================================================================== #
 
 
-
-
-
-        # ================================ PART 3. ACTION ================================= #
+        # ==================================== ACTION ===================================== #
         ################################# USEFUL VARIABLES ##################################
         LEG_JOINT2MOTOR_IDX = [3, 4, 5,                                                     #
                                0, 1, 2,                                                     #
@@ -259,19 +232,16 @@ class Controller(DashboardMixin):
         KDS = [0.5] * 12                                                                    #
         CONTROL_DT = 0.02                                                                   #
         #####################################################################################
-
-        # TODO [9] Fill the PID controller with the target command (target_dof_pos) 
-        for i in range(12):                                                                 
-            motor_idx = i                                              
-            self.low_cmd.motor_cmd[motor_idx].q = 0.0      
-            self.low_cmd.motor_cmd[motor_idx].dq = 0.0                                      
-            self.low_cmd.motor_cmd[motor_idx].kp = 0.0                                  
-            self.low_cmd.motor_cmd[motor_idx].kd = 0.0                               
-            self.low_cmd.motor_cmd[motor_idx].tau = 0.0
-        self.send_cmd(self.low_cmd)
-
-        self.counter += 1                                                         
-        time.sleep(CONTROL_DT)
+        for i in range(12):                                                                 #
+            motor_idx = LEG_JOINT2MOTOR_IDX[i]                                              #
+            self.low_cmd.motor_cmd[motor_idx].q = float(self.target_dof_pos[i])             #
+            self.low_cmd.motor_cmd[motor_idx].dq = 0.0                                      #
+            self.low_cmd.motor_cmd[motor_idx].kp = KPS[i]                                   #
+            self.low_cmd.motor_cmd[motor_idx].kd = KDS[i]                                   #
+            self.low_cmd.motor_cmd[motor_idx].tau = 0.0                                     #
+                                                                                            #
+        self.send_cmd(self.low_cmd)                                                         #
+        time.sleep(CONTROL_DT)                                                              #
         # ================================================================================= #
 
 
@@ -301,4 +271,7 @@ if __name__ == "__main__":
 
             except KeyboardInterrupt:
                 break
+
+    create_damping_cmd(controller.low_cmd)
+    controller.send_cmd(controller.low_cmd)
     print("Exit")

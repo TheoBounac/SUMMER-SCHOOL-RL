@@ -104,9 +104,9 @@ You should see :
   <br>
  </p>
 
- <p align="center">
-Press `9` to deactivate the elastic band and `7` / `8` to raise / lower the robot.
- </p>
+<p align="center">
+Press <kbd>9</kbd> to deactivate the elastic band and <kbd>7</kbd> / <kbd>8</kbd> to raise / lower the robot.
+</p>
  
 You should see :
  <p align="center">

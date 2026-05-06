@@ -100,7 +100,7 @@ python simulate_python/unitree_mujoco.py
 You should see :
 
  <p align="center">
-  <img src="doc/leve.png" width="800">
+  <img src="doc/leve.png" width="900">
   <br>
  </p>
  
@@ -108,7 +108,7 @@ Press `9` to deactivate the elastic band and `7` / `8` to raise / lower the robo
  
 You should see :
  <p align="center">
-  <img src="doc/bonne.png" width="600">
+  <img src="doc/bonne.png" width="900">
   <br>
  </p>
  

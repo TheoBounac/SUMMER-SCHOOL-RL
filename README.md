@@ -131,7 +131,7 @@ You should see :
   <br>
  </p>
 
-You can also launch the code without this graphic panel with --`debug`:
+You can also launch the code without this graphic panel with `--debug`:
 ```bash
 conda activate go2_rl
 cd ~/SUMMER-SCHOOL-RL/2.Deploy_python

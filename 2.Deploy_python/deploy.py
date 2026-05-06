@@ -20,6 +20,13 @@ from common.rotation_helper import get_gravity_orientation
 from common.remote_controller import RemoteController, KeyMap
 from common.dashboard_panels import DashboardMixin
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--debug", action="store_true")
+args = parser.parse_args()
+DEBUG = args.debug
+
 POLICY_PATH = LEGGED_GYM_ROOT_DIR / "2.Deploy_python/policy/policy.pt"
 NUM_ACTIONS = 12
 NUM_OBS = 45
@@ -152,6 +159,10 @@ class Controller(DashboardMixin):
         # ============================== PART 1. OBSERVATION ==================================== #
         ################################# USEFUL VARIABLES ########################################
         low_state = self.low_state                                                                #
+        Vx = self.remote_controller.ly                                                            #
+        Vy = -self.remote_controller.lx                                                           #
+        Wz = -self.remote_controller.rx                                                           #
+                                                                                                  #
         LEG_JOINT2MOTOR_IDX = [3, 4, 5,                                                           #
                                0, 1, 2,                                                           #
                                9, 10, 11,                                                         #
@@ -183,9 +194,9 @@ class Controller(DashboardMixin):
 
         # TODO [3] Read command from remote controller
         if self.use_remote_controller:                                                            
-            self.command[0] = self.remote_controller.ly                                               
-            self.command[1] = -self.remote_controller.lx                                             
-            self.command[2] = -self.remote_controller.rx  
+            self.command[0] = None                                              
+            self.command[1] = None                                            
+            self.command[2] = None
 
         # TODO [4] Read joint positions and velocities and add the offset
         self.dof_pos = None
@@ -262,7 +273,8 @@ class Controller(DashboardMixin):
         KDS = [0.5] * 12                                                                    #
         #####################################################################################
 
-        # TODO [9] Fill the PID controller with the target command (target_dof_pos) 
+        # TODO [9] Fill the PID controller with the target command (target_dof_pos) and match 
+        # the indexes betwin PD controller and policy 
         for i in range(12):                                                                 
             motor_idx = i                                              
             self.low_cmd.motor_cmd[motor_idx].q = 0.0      
@@ -277,6 +289,8 @@ class Controller(DashboardMixin):
         # ================================================================================= #
 
 
+
+
 if __name__ == "__main__":
     ChannelFactoryInitialize(0, "lo")
     controller = Controller()
@@ -285,18 +299,29 @@ if __name__ == "__main__":
     controller.move_to_default_pos()
     controller.default_pos_state()
 
-    with Live(
-        controller.render_dashboard(),
-        refresh_per_second=5,
-        screen=False,
-        transient=False,
-    ) as live:
+    if not DEBUG:
+        with Live(
+            controller.render_dashboard(),
+            refresh_per_second=5,
+            screen=False,
+            transient=False,
+        ) as live:
+            while True:
+                try:
+                    controller.run()
+
+                    if controller.counter % DISPLAY_EVERY == 0:
+                        live.update(controller.render_dashboard())
+
+                    if controller.remote_controller.button[KeyMap.select] == 1:
+                        break
+
+                except KeyboardInterrupt:
+                    break
+    else:
         while True:
             try:
                 controller.run()
-
-                if controller.counter % DISPLAY_EVERY == 0:
-                    live.update(controller.render_dashboard())
 
                 if controller.remote_controller.button[KeyMap.select] == 1:
                     break

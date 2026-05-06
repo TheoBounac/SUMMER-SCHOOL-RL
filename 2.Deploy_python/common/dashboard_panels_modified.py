@@ -10,7 +10,10 @@ from rich.console import Group
 from common.rotation_helper import get_gravity_orientation
 
 
+
 class DashboardMixin:
+
+
     def _is_invalid(self, value):
         if value is None:
             return True
@@ -178,16 +181,13 @@ class DashboardMixin:
 
     def _get_obs_constants(self):
         return {
-            "LEG_JOINT2MOTOR_IDX": np.array(
-                [3, 4, 5, 0, 1, 2, 9, 10, 11, 6, 7, 8],
-                dtype=np.int32,
-            ),
+            "LEG_JOINT2MOTOR_IDX": np.array([3, 4, 5, 0, 1, 2, 9, 10, 11, 6, 7, 8], dtype=np.int32),
             "DEFAULT_ANGLES": np.array(
                 [
-                    0.1, 0.8, -1.5,
-                    -0.1, 0.8, -1.5,
-                    0.1, 1.0, -1.5,
-                    -0.1, 1.0, -1.5,
+                    0.1,  0.8, -1.5,
+                   -0.1,  0.8, -1.5,
+                    0.1,  1.0, -1.5,
+                   -0.1,  1.0, -1.5,
                 ],
                 dtype=np.float32,
             ),
@@ -198,10 +198,7 @@ class DashboardMixin:
         }
 
     def _get_low_cmd_target_positions(self):
-        leg_joint2motor_idx = np.array(
-            [3, 4, 5, 0, 1, 2, 9, 10, 11, 6, 7, 8],
-            dtype=np.int32,
-        )
+        leg_joint2motor_idx = np.array([3, 4, 5, 0, 1, 2, 9, 10, 11, 6, 7, 8], dtype=np.int32)
 
         low_cmd = getattr(self, "low_cmd", None)
         if low_cmd is None:
@@ -271,7 +268,7 @@ class DashboardMixin:
             }
         except Exception:
             return None
-
+        
     def _obs_blocks_table(self):
         raw_obs = getattr(self, "obs", None)
         expected = self._compute_expected_observation_parts()
@@ -290,58 +287,34 @@ class DashboardMixin:
         table.add_column("Status", width=16, no_wrap=True)
 
         table.add_row(
-            "ang_vel",
-            "0:3",
+            "ang_vel", "0:3",
             self._fmt_obs_display(raw_ang_vel_slice),
-            self._compare_status(
-                raw_ang_vel_slice,
-                None if expected is None else expected["ang_vel_obs"],
-            ),
+            self._compare_status(raw_ang_vel_slice, None if expected is None else expected["ang_vel_obs"]),
         )
         table.add_row(
-            "gravity",
-            "3:6",
+            "gravity", "3:6",
             self._fmt_obs_display(raw_gravity_slice),
-            self._compare_status(
-                raw_gravity_slice,
-                None if expected is None else expected["gravity_obs"],
-            ),
+            self._compare_status(raw_gravity_slice, None if expected is None else expected["gravity_obs"]),
         )
         table.add_row(
-            "remote cmd",
-            "6:9",
+            "remote cmd", "6:9",
             self._fmt_obs_display(raw_cmd_slice),
-            self._compare_status(
-                raw_cmd_slice,
-                None if expected is None else expected["cmd_obs"],
-            ),
+            self._compare_status(raw_cmd_slice, None if expected is None else expected["cmd_obs"]),
         )
         table.add_row(
-            "qj_obs",
-            "9:21",
+            "qj_obs", "9:21",
             self._fmt_obs_display(raw_qj_obs_slice),
-            self._compare_status(
-                raw_qj_obs_slice,
-                None if expected is None else expected["qj_obs"],
-            ),
+            self._compare_status(raw_qj_obs_slice, None if expected is None else expected["qj_obs"]),
         )
         table.add_row(
-            "dqj_obs",
-            "21:33",
+            "dqj_obs", "21:33",
             self._fmt_obs_display(raw_dqj_obs_slice),
-            self._compare_status(
-                raw_dqj_obs_slice,
-                None if expected is None else expected["dqj_obs"],
-            ),
+            self._compare_status(raw_dqj_obs_slice, None if expected is None else expected["dqj_obs"]),
         )
         table.add_row(
-            "last_action",
-            "33:45",
+            "last_action", "33:45",
             self._fmt_obs_display(raw_last_action_slice),
-            self._compare_status(
-                raw_last_action_slice,
-                None if expected is None else expected["last_action_obs"],
-            ),
+            self._compare_status(raw_last_action_slice, None if expected is None else expected["last_action_obs"]),
         )
 
         return Panel(table, title="OBSERVATIONS", border_style="magenta")
@@ -424,22 +397,18 @@ class DashboardMixin:
 
     def _get_joint_limits(self):
         joint_max = np.array(
-            [
-                0.960, 2.704, 0.735,
-                1.161, 2.704, 0.735,
-                0.962, 3.552, 0.735,
-                1.162, 3.552, 0.735,
-            ],
+            [0.960, 2.704, 0.735,
+             1.161, 2.704, 0.735,
+             0.962, 3.552, 0.735,
+             1.162, 3.552, 0.735],
             dtype=np.float32,
         )
 
         joint_min = np.array(
-            [
-                -1.161, -2.386, -1.458,
-                -0.961, -2.384, -1.297,
-                -1.164, -1.544, -1.338,
-                -0.961, -1.537, -1.293,
-            ],
+            [-1.161, -2.386, -1.458,
+             -0.961, -2.384, -1.297,
+             -1.164, -1.544, -1.338,
+             -0.961, -1.537, -1.293],
             dtype=np.float32,
         )
 

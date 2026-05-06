@@ -76,14 +76,14 @@ pip install scipy
 
 Clone project :
 ```bash
-cd ~/
 git clone https://github.com/TheoBounac/SUMMER-SCHOOL-RL.git
 ```
 
 ## 2️⃣ 🤖 Install Unitree SDK2 Python
 
+Go to unitree_sdk2_python folder and install cyclonedds (with the right path):
 ```bash
-cd ~/SUMMER-SCHOOL-RL/unitree_sdk2_python
+cd SUMMER-SCHOOL-RL/unitree_sdk2_python
 sudo apt install python3-pip
 export CYCLONEDDS_HOME=~/SUMMER-SCHOOL-RL/cyclonedds/install
 pip3 install -e .
@@ -92,10 +92,9 @@ pip3 install -e .
 ## 3️⃣ 🏗️ Launch the Mujoco simulation
 
 ```bash
-cd ~/SUMMER-SCHOOL-RL/1.Unitree_mujoco
 pip3 install mujoco
 pip3 install pygame
-python simulate_python/unitree_mujoco.py
+python SUMMER-SCHOOL-RL/1.Unitree_mujoco/simulate_python/unitree_mujoco.py
 ```
 You should see :
 
@@ -119,11 +118,11 @@ You should see :
 ---
 ## 4️⃣ 🚀 Launch the deploy.py code
 
-In an other terminal:
+In an other terminal (also export cyclonedds):
 ```bash
 conda activate go2_rl
-cd ~/SUMMER-SCHOOL-RL/2.Deploy_python
-python deploy.py
+export CYCLONEDDS_HOME=~/SUMMER-SCHOOL-RL/cyclonedds/install
+python SUMMER-SCHOOL-RL/2.Deploy_python/deploy.py
 ```
 You should see :
  <p align="center">
@@ -134,8 +133,7 @@ You should see :
 You can also launch the code without this graphic panel with `--debug`:
 ```bash
 conda activate go2_rl
-cd ~/SUMMER-SCHOOL-RL/2.Deploy_python
-python deploy.py --debug
+python SUMMER-SCHOOL-RL/2.Deploy_python/deploy.py --debug
 ```
 
 ---

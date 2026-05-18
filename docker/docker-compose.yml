@@ -13,7 +13,7 @@ services:
       - DISPLAY=${DISPLAY}
       - PYTHONUNBUFFERED=1
     volumes:
-      - .:/workspace/SUMMER-SCHOOL-RL
+      - ..:/workspace/SUMMER-SCHOOL-RL
       - /tmp/.X11-unix:/tmp/.X11-unix
     stdin_open: true
     tty: true

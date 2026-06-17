@@ -91,11 +91,11 @@ Once the docker is installed you can try to launch it:
 
 🏋️ Training (MJLab)
 
-**Part 1** : [📘 Training instruction](doc/Docker.md)
+**Part 1** : [📘 Training instruction](doc/training_instruction.md)
 
 🤖 Deployment
 
-**Part 2** : [📘 Deploy instruction](doc/Docker.md)
+**Part 2** : [📘 Deploy instruction](doc/deploy_instruction.md)
 
 
 ---

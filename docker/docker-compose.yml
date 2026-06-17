@@ -1,9 +1,6 @@
 services:
   summer-school-rl:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    image: summer-school-rl:latest
+    image: aixhrisummerschool2026/aixhri-summer-school-2026:Tutorial_06_Reinforcement_Learning_Go2
     container_name: summer-school-rl
     working_dir: /workspace/SUMMER-SCHOOL-RL
     network_mode: host

@@ -18,12 +18,12 @@
 
 <table align="center" style="border-collapse:collapse;">
 <th style="width:30%; text-align:center;">
-  <div style="display:inline-block; width:200px;">Deploy on Mujoco</div>
+  <div style="display:inline-block; width:100px;">Train on Mjlab</div>
 </th>
 
   <tr>
     <td style="width:30%; text-align:center;">
-      <img src="doc/mjlab.png" style="width:600px; display:block; margin:auto;">
+      <img src="doc/mjlab.png" style="width:400px; display:block; margin:auto;">
     </td>
 
   </tr>

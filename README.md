@@ -9,11 +9,12 @@
  
 # <h2 align="center">SUMMER-SCHOOL-RL-WORKSHOP</h2>
 
-**RL Locomotion tutorial with Unitree Go2 in The AI for Human–Robot Interaction summer school which will be held at the Loria and Inria Center at the Université de Lorraine, in Nancy (France) from July 6 to 10 2026.
-This repository provides a Python training/deployment framework for the Unitree Go2 quadrupped robot, designed to train Reinforcement-Learning policies and deploy them in MuJoCo exactly like it would be on real hardware.**
-**It supports SIM-to-SIM deployment in MuJoCo, with a focus on UI control.**
+**RL Locomotion tutorial with Unitree Go2 in The AI for Human–Robot Interaction summer school which will be held at the Loria and Inria Center at the Université de Lorraine, in Nancy (France) from July 6 to 10 2026.**
 
-**It deploys RL policies trained for locomotion**
+**This repository provides a Python training/deployment framework for the Unitree Go2 quadrupped robot, designed to train Reinforcement-Learning policies and deploy them in MuJoCo exactly like it would be on real hardware.**
+
+
+
 
 
 <table align="center" style="border-collapse:collapse;">

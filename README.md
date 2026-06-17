@@ -35,22 +35,33 @@
 
 ```
 SUMMER-SCHOOL-RL/
-  ├── main.py
-  ├── 1.Unitree_mujoco/
-  │   ├── simulate_python
-  │   ├── terrain_tool
-  │   └── unitree_robots
-  |
-  ├── 2.Deploy_python/
-  │   ├── common
-  │   ├── mini_examples
-  │   ├── policy
-  │   ├── deploy.py
-  │   └── deploy_to_fill.py
-  │  
-  ├── cyclonedds/
+  ├── 1.Training/
+  │     ├── unitree_go2/
+  │     │    ├── xmls
+  │     │    └── go2_constants.py
+  │     │
+  │     └── unitree_go2_velocity/
+  │         ├── env_cfg.py
+  │         ├── rl_cfg.py
+  │         └── runner.py
+  │     
+  ├── 2.Deploy/
+  │     ├── Unitree_mujoco/
+  │     │    ├── simulate_python
+  │     │    ├── terrain_tool
+  │     │    └── unitree_robots
+  │     │
+  │     ├── Deploy_python/
+  │     │   ├── common
+  │     │   ├── mini_examples
+  │     │   ├── policy
+  │     │   ├── deploy.py
+  │     │   └── deploy_to_fill.py
+  │     │
+  │     ├── cyclonedds
+  │     └── unitree_sdk2_python
   ├── doc/
-  ├── unitree_sdk2_python/
+  ├── docker/
   └── README.md
 ```
 

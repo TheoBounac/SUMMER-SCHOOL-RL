@@ -90,13 +90,13 @@ For the summer school tutorial, students are required to install this workshop u
 Once the docker is installed you can try to launch it:
 
 🏋️ Training (MJLab)
+
 **Part 1** : [📘 Training instruction](doc/Docker.md)
 
 🤖 Deployment
+
 **Part 2** : [📘 Deploy instruction](doc/Docker.md)
 
-We also provide a native installation guide for those who wish to continue working on the project beyond the tutorial.
-**🔧 Native installation** : [📘 Native Installation](doc/Installation.md)
 
 ---
 

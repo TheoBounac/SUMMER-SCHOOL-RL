@@ -61,7 +61,7 @@ python SUMMER-SCHOOL-RL/1.Unitree_mujoco/simulate_python/unitree_mujoco.py
 You should see :
 
  <p align="center">
-  <img src="doc/leve.png" width="900">
+  <img src="leve.png" width="900">
   <br>
  </p>
 
@@ -71,7 +71,7 @@ Press <kbd>9</kbd> to deactivate the elastic band and <kbd>7</kbd> / <kbd>8</kbd
  
 You should see :
  <p align="center">
-  <img src="doc/bonne.png" width="900">
+  <img src="bonne.png" width="900">
   <br>
  </p>
  
@@ -88,7 +88,7 @@ python SUMMER-SCHOOL-RL/2.Deploy_python/deploy.py
 ```
 You should see :
  <p align="center">
-  <img src="doc/fill.png" width="1100">
+  <img src="fill.png" width="1100">
   <br>
  </p>
 
@@ -104,15 +104,15 @@ python SUMMER-SCHOOL-RL/2.Deploy_python/deploy.py --debug
 Now you must follow the tasks and fill the `deploy.py` file:
 
 <div align="center">
-  <img src="doc/obs.png" width="1100"><br>
-  <img src="doc/policy.png" width="1100" style="margin-top:-800px;"><br>
-  <img src="doc/motor.png" width="1100" style="margin-top:-800px;">
+  <img src="obs.png" width="1100"><br>
+  <img src="policy.png" width="1100" style="margin-top:-800px;"><br>
+  <img src="motor.png" width="1100" style="margin-top:-800px;">
 </div>
 
 
 When you completed all the tasks, the robot should walk and you should see :
  <p align="center">
-  <img src="doc/im2.png" width="1100">
+  <img src="im2.png" width="1100">
   <br>
  </p>
 

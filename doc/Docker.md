@@ -109,7 +109,4 @@ Or without the dashboard:
 python 2.Deploy_python/deploy.py --debug
 ```
 
----
 
-- Adrien Guenard  
-- Cyril Regan  

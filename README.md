@@ -85,10 +85,10 @@ SUMMER-SCHOOL-RL/
 
 # 📝 Installation guide
 For the summer school tutorial, students are required to install this workshop using Docker. Please follow this guide:
-**🐳 Docker** : [📘 How to train Reinforcement Learning (RL) policies on **IsaacLab Simulation**](doc/Isaaclab.md)
+**🐳 Docker** : [📘 Docker Installation](doc/Docker.md)
 
 We also provide a native installation guide for those who wish to continue working on the project beyond the tutorial.
-**🔧 Native installation** : [📘 How to train Reinforcement Learning (RL) policies on **IsaacLab Simulation**](doc/Isaaclab.md)
+**🔧 Native installation** : [📘 Native Installation](doc/Installation.md)
 
 ---
 

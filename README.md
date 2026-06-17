@@ -84,9 +84,9 @@ SUMMER-SCHOOL-RL/
 
 
 # 📝 Installation guide
+
 **🐳 Docker** : [📘 How to train Reinforcement Learning (RL) policies on **IsaacLab Simulation**](doc/Isaaclab.md)
 
-# 🐳 Docker Installation
 **🔧 Native installation** : [📘 How to train Reinforcement Learning (RL) policies on **IsaacLab Simulation**](doc/Isaaclab.md)
 
 ---

@@ -5,6 +5,10 @@ Go to the MJLab workspace:
 ```bash
 cd /opt/mjlab
 ```
+You should see:
+<p align="center">
+  <img src="doc/docker1.png" width="700">
+</p>
 
 Launch the Go2 environment with a random policy:
 

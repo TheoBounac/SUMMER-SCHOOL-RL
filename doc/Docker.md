@@ -1,8 +1,7 @@
 
 
-# 🐳 Docker Installation
+# # <h2 align="center">🐳 Docker Installation</h2>
 
-This project can also be launched entirely inside Docker.
 
 ## 1️⃣ Install Docker
 

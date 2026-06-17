@@ -26,8 +26,12 @@ Start training:
 ```bash
 uv run train Mjlab-Velocity-Flat-Unitree-Go2 --env.scene.num-envs 1024
 ```
-You should see:
+Enter choice 3:
 <p align="center">
   <img src="docker4.png" width="900">
+</p>
+
+You should see the logs:
+<p align="center">
   <img src="docker5.png" width="900">
 </p>

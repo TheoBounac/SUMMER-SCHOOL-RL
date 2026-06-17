@@ -63,8 +63,13 @@ cd /workspace/SUMMER-SCHOOL-RL/2.Deploy
 
 python Deploy_python/deploy.py
 ```
-
-Or without the dashboard:
+You should see :
+ <p align="center">
+  <img src="fill.png" width="1100">
+  <br>
+ </p>
+ 
+Or without the dashboard with with `--debug`:
 
 ```bash
 python Deploy_python/deploy.py --debug

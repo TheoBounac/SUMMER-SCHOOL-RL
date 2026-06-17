@@ -9,6 +9,10 @@ cd /workspace/SUMMER-SCHOOL-RL/2.Deploy
 
 python Unitree_mujoco/simulate_python/unitree_mujoco.py
 ```
+ <p align="center">
+  <img src="deploy1.png" width="900">
+  <br>
+ </p>
 
 ---
 

@@ -51,7 +51,11 @@ Example:
 ```bash
 docker exec -it summer-school-rl bash
 ```
-
+ <p align="center">
+  <img src="deploy2.png" width="1100">
+  <br>
+ </p>
+ 
 ---
 
 ## 3️⃣ Launch the deployment script

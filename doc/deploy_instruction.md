@@ -23,6 +23,13 @@ You should see :
  <p align="center">
 Press <kbd>9</kbd> to deactivate the elastic band and <kbd>7</kbd> / <kbd>8</kbd> to raise / lower the robot.
 </p>
+
+Command instruction:
+ <p align="center">
+  <img src="bonne.png" width="900">
+  <br>
+ </p>
+ 
 ---
 
 ## 2️⃣ Open a second terminal inside the same container

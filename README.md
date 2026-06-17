@@ -101,20 +101,23 @@ These are the repositories we used for this workshop :
 |  **Unitree SDK2 Python** | [https://github.com/unitreerobotics/unitree_sdk2_python](https://github.com/unitreerobotics/unitree_sdk2_python) |
 |  **unitree_rl_lab** | [https://github.com/unitreerobotics/unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab) |
 |  **Mujoco** | [https://github.com/unitreerobotics/unitree_mujoco](https://github.com/unitreerobotics/unitree_mujoco) |
+|  **Mjlab** | [https://github.com/mujocolab/mjlab](https://github.com/mujocolab/mjlab) |
+
 
 
 
 
 ---
 
-## 👥 Author & Contributors
+## 👥 Authors & Contributors
 
 **Author:**  
-Théo Bounaceur  
+Théo Bounaceur & Ioannis Loizou (phd student)  
 Laboratory **LORIA** (CNRS / University of Lorraine), Nancy, France  
 🧬 Field: Reinforcement Learning · Unitree robots · IsaacLab · IsaacGym · ROS 2 · Unitree SDK2  
 📫 Contact: theo.bounaceur@loria.fr  (do not hesitate to contact me)
 
 **Supervisors / Advisors:**  
 - Adrien Guenard  
-- Cyril Regan  
+- Cyril Regan
+- Serena Ivaldi  

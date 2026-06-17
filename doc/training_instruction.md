@@ -1,5 +1,6 @@
 # 🏋️ Training (MJLab)
 (Make sure you completed the docker installation)
+
 Inside the container, go to the MJLab workspace:
 
 ```bash

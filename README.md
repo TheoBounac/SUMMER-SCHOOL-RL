@@ -84,9 +84,10 @@ SUMMER-SCHOOL-RL/
 
 
 # 📝 Installation guide
-
+For the summer school tutorial, students are required to install this workshop using Docker. Please follow this guide: [link]
 **🐳 Docker** : [📘 How to train Reinforcement Learning (RL) policies on **IsaacLab Simulation**](doc/Isaaclab.md)
 
+We also provide a native installation guide for those who wish to continue working on the project beyond the tutorial.
 **🔧 Native installation** : [📘 How to train Reinforcement Learning (RL) policies on **IsaacLab Simulation**](doc/Isaaclab.md)
 
 ---
@@ -112,9 +113,9 @@ These are the repositories we used for this workshop :
 ## 👥 Authors & Contributors
 
 **Author:**  
-Théo Bounaceur & Ioannis Loizou (phd student)  
+Théo Bounaceur & Ioannis Loizou (PhD student)  
 Laboratory **LORIA** (CNRS / University of Lorraine), Nancy, France  
-🧬 Field: Reinforcement Learning · Unitree robots · IsaacLab · IsaacGym · ROS 2 · Unitree SDK2  
+🧬 Field: Reinforcement Learning · Unitree robots · Unitree SDK2 · IsaacLab · IsaacGym · MuJoCo · ROS2  
 📫 Contact: theo.bounaceur@loria.fr & ioannis.loizou@loria.fr
 
 **Supervisors / Advisors:**  

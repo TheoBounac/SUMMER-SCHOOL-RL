@@ -1,6 +1,6 @@
 # 🏋️ Training (MJLab)
-
-Go to the MJLab workspace:
+(Make sure you completed the docker installation)
+Inside the container, go to the MJLab workspace:
 
 ```bash
 cd /opt/mjlab

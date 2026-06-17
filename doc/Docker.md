@@ -1,14 +1,24 @@
 <h2 align="center">🐳 Docker Installation</h2>
 
+This project can be launched entirely inside Docker.
+
+The Docker image automatically installs all dependencies required for both:
+
+* **Training** (MJLab + MuJoCo Warp)
+* **Deployment** (Unitree SDK2 + CycloneDDS + MuJoCo simulator)
+
+No manual installation of MJLab, MuJoCo, CycloneDDS, or the Unitree SDK is required.
+
+---
 
 ## 1️⃣ Install Docker
 
 Install:
 
-- Docker
-- Docker Compose
+* Docker
+* Docker Compose
 
-Verify installation:
+Verify the installation:
 
 ```bash
 docker --version
@@ -32,17 +42,17 @@ cd SUMMER-SCHOOL-RL
 xhost +local:docker
 ```
 
-This allows MuJoCo and pygame windows to open correctly from the container.
+This allows MuJoCo, MJLab, and pygame windows to open correctly from the container.
 
 ---
 
 ## 4️⃣ Build the Docker image
 
 ```bash
-docker compose -f docker/docker-compose.yml build --no-cache
+docker compose -f docker/docker-compose.yml build
 ```
 
-The first build can take several minutes.
+> **Note:** The first build can take several minutes because it installs MJLab, MuJoCo Warp, Unitree SDK2, CycloneDDS, and all Python dependencies.
 
 ---
 
@@ -60,12 +70,38 @@ root@xxxxx:/workspace/SUMMER-SCHOOL-RL#
 
 ---
 
-## 6️⃣ Launch MuJoCo simulation
+# 🏋️ Training (MJLab)
+
+Go to the MJLab workspace:
+
+```bash
+cd /opt/mjlab
+```
+
+Launch the Go2 environment with a random policy:
+
+```bash
+uv run play Mjlab-Velocity-Flat-Unitree-Go2 --agent random
+```
+
+Start training:
+
+```bash
+uv run train Mjlab-Velocity-Flat-Unitree-Go2 --env.scene.num-envs 1024
+```
+
+---
+
+# 🤖 Deployment
+
+## 6️⃣ Launch the MuJoCo simulator
 
 Inside the container:
 
 ```bash
-python 1.Unitree_mujoco/simulate_python/unitree_mujoco.py
+cd /workspace/SUMMER-SCHOOL-RL/2.Deploy
+
+python Unitree_mujoco/simulate_python/unitree_mujoco.py
 ```
 
 ---
@@ -78,7 +114,7 @@ On the host machine:
 docker ps
 ```
 
-Copy the container name, then:
+Copy the container name, then run:
 
 ```bash
 docker exec -it CONTAINER_NAME bash
@@ -87,23 +123,23 @@ docker exec -it CONTAINER_NAME bash
 Example:
 
 ```bash
-docker exec -it summer_school_workshop_rl-summer-school-rl-run-xxxx bash
+docker exec -it summer-school-rl bash
 ```
 
 ---
 
-## 8️⃣ Launch deploy.py
+## 8️⃣ Launch the deployment script
 
 Inside the second Docker terminal:
 
 ```bash
-python 2.Deploy_python/deploy.py
+cd /workspace/SUMMER-SCHOOL-RL/2.Deploy
+
+python Deploy_python/deploy.py
 ```
 
 Or without the dashboard:
 
 ```bash
-python 2.Deploy_python/deploy.py --debug
+python Deploy_python/deploy.py --debug
 ```
-
-

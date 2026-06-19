@@ -50,14 +50,15 @@
 ```
 SUMMER-SCHOOL-RL/
   ├── 1.Training/
-  │     ├── unitree_go2/
-  │     │    ├── xmls
-  │     │    └── go2_constants.py
-  │     │
-  │     └── unitree_go2_velocity/
-  │         ├── env_cfg.py
-  │         ├── rl_cfg.py
-  │         └── runner.py
+  │     ├── src/
+  │          ├── unitree_go2/
+  │          │    ├── xmls
+  │          │    └── go2_constants.py
+  │          │
+  │          └── unitree_go2_velocity/
+  │               ├── env_cfg.py
+  │               ├── rl_cfg.py
+  │               └── runner.py
   │     
   ├── 2.Deploy/
   │     ├── Unitree_mujoco/

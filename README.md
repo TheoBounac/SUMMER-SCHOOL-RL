@@ -50,7 +50,7 @@
 ```
 SUMMER-SCHOOL-RL/
   ├── 1.Training/
-  │     ├── src/
+  │     └── src/
   │          ├── unitree_go2/
   │          │    ├── xmls
   │          │    └── go2_constants.py

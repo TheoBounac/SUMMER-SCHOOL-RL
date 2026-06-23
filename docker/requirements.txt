@@ -4,3 +4,4 @@ pygame==2.6.1
 rich==14.0.0
 opencv-python
 scipy
+torch

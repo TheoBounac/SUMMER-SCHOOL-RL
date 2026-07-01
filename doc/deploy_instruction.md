@@ -21,7 +21,7 @@ You should see :
   <br>
  </p>
  <p align="center">
-Press <kbd>9</kbd> to deactivate the elastic band and <kbd>7</kbd> / <kbd>8</kbd> to raise / lower the robot.
+Press <kbd>9</kbd> to activate or deactivate the elastic band. When activated you can change the force of the elastic: <kbd>7</kbd> / <kbd>8</kbd> to raise / lower the robot.
 </p>
 
 Command instruction:

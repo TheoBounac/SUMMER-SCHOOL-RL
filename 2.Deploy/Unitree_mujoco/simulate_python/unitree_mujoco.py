@@ -15,6 +15,11 @@ shutdown_event = threading.Event()
 mj_model = mujoco.MjModel.from_xml_path(str(config.ROBOT_SCENE))
 mj_data = mujoco.MjData(mj_model)
 
+# Disable shadows and material reflections before creating the viewer.
+# Rendering flags belong to MjvScene, which launch_passive() does not expose.
+mj_model.light_castshadow[:] = 0
+mj_model.mat_reflectance[:] = 0
+
 
 if config.ENABLE_ELASTIC_BAND:
     elastic_band = ElasticBand()

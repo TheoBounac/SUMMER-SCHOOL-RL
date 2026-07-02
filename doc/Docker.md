@@ -52,7 +52,7 @@ This allows MuJoCo, MJLab, and pygame windows to open correctly from the contain
 docker compose -f docker/docker-compose.yml build
 ```
 
-> **Note:** The first build can take several minutes because it installs MJLab, MuJoCo Warp, Unitree SDK2, CycloneDDS, and all Python dependencies.
+> **Note:** The first build can take several minutes (30min - 1h) because it installs MJLab, MuJoCo Warp, Unitree SDK2, CycloneDDS, and all Python dependencies.
 
 ---
 

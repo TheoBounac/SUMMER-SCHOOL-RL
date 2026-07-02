@@ -63,6 +63,13 @@ export UV_HTTP_TIMEOUT=300s
 ```bash
 docker compose -f docker/docker-compose.yml run --rm summer-school-rl
 ```
+> **Troubleshooting:** if ```docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi``` gives an error, do that:
+```
+sudo apt update
+sudo apt install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
 
 You should now be inside the Docker container:
 

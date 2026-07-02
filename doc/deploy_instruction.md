@@ -80,7 +80,9 @@ python Deploy_python/deploy.py --debug
 ```
 ## 4️⃣ 🚀 Complete the workshop
 
-When you completed all the tasks, the robot should walk and you should see :
+This is the end of the preparation. 
+During the summer school week, students will be asked to do the tasks required to train and deploy a policy for the Go2 locomotion.
+When you complete all the tasks, the robot should walk and you should see :
  <p align="center">
   <img src="im2.png" width="1100">
   <br>

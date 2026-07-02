@@ -54,7 +54,7 @@ docker exec -it CONTAINER_NAME bash
 Example:
 
 ```bash
-docker exec -it summer-school-rl bash
+docker exec -it docker-summer-school-rl-run-8a7194d5a1f7 bash
 ```
  <p align="center">
   <img src="deploy2.png" width="1100">

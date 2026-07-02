@@ -1,4 +1,4 @@
-"""Unitree Go2 constants. File adapted from G02 unitree_rl_mjlab"""
+"""Unitree Go2 constants. File adapted from Go2 unitree_rl_mjlab (https://github.com/unitreerobotics/unitree_rl_mjlab)"""
 
 from pathlib import Path
 
@@ -52,7 +52,7 @@ GO2_ACTUATOR_HIP = BuiltinPositionActuatorCfg(
     ".*hip_.*",
   ),
   stiffness=20.0,
-  damping=1.0,
+  damping=0.5,
   effort_limit=23.5,
   armature=0.01,
 )
@@ -61,7 +61,7 @@ GO2_ACTUATOR_THIGH = BuiltinPositionActuatorCfg(
     ".*thigh_.*",
   ),
   stiffness=20.0,
-  damping=1.0,
+  damping=0.5,
   effort_limit=23.5,
   armature=0.01,
 )
@@ -69,8 +69,8 @@ GO2_ACTUATOR_CALF = BuiltinPositionActuatorCfg(
   target_names_expr=(
     ".*calf_.*",
   ),
-  stiffness=40.0,
-  damping=2.0,
+  stiffness=20.0,
+  damping=0.5,
   effort_limit=45,
   armature=0.02,
 )
@@ -79,17 +79,17 @@ GO2_ACTUATOR_CALF = BuiltinPositionActuatorCfg(
 # Keyframes.
 ##
 
-
-INIT_STATE = EntityCfg.InitialStateCfg(
-  pos=(0.0, 0.0, 0.32),
-  joint_pos={
-    ".*thigh_joint": 0.9,
-    ".*calf_joint": -1.8,
-    ".*R_hip_joint": 0.1,
-    ".*L_hip_joint": -0.1,
-  },
-  joint_vel={".*": 0.0},
-)
+# TODO(Exercise 1 - Init State): define INIT_STATE — the robot's default
+# standing pose. Fill in an EntityCfg.InitialStateCfg with:
+#   - pos=(0.0, 0.0, 0.32)
+#   - joint_pos: regex -> angle (rad):
+#       "^F[LR]_thigh_joint$": 0.8
+#       "^R[LR]_thigh_joint$": 1.0
+#       ".*calf_joint": -1.5
+#       ".*R_hip_joint": 0.1
+#       ".*L_hip_joint": -0.1
+#   - joint_vel={".*": 0.0}
+raise NotImplementedError("TODO: implement INIT_STATE (see comment above)")
 
 ##
 # Collision config.
@@ -137,12 +137,9 @@ GO2_ARTICULATION = EntityArticulationInfoCfg(
 GO2_ACTION_SCALE: dict[str, float] = {}
 for a in GO2_ARTICULATION.actuators:
   assert isinstance(a, BuiltinPositionActuatorCfg)
-  e = a.effort_limit
-  s = a.stiffness
   names = a.target_names_expr
-  assert e is not None
   for n in names:
-    GO2_ACTION_SCALE[n] = 0.25 * e / s
+    GO2_ACTION_SCALE[n] = 0.25
 
 def get_go2_robot_cfg() -> EntityCfg:
   """Get a fresh Go2 robot configuration instance.

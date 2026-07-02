@@ -63,10 +63,9 @@ export UV_HTTP_TIMEOUT=300s
 ```bash
 docker compose -f docker/docker-compose.yml run --rm summer-school-rl
 ```
-> **Troubleshooting:** If Docker cannot access the NVIDIA GPU, test it with: ```docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi```. If this command returns an error, install and configure the NVIDIA Container Toolkit: ```sudo apt update``` ```sudo apt install -y nvidia-container-toolkit``` ```sudo nvidia-ctk runtime configure --runtime=``` ```sudo systemctl restart docker```
+> **Troubleshooting:** If Docker cannot access the NVIDIA GPU, test it with: ```docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi```. If this command returns an error, install and configure the NVIDIA Container Toolkit:```sudo apt update``` ```sudo apt install -y nvidia-container-toolkit``` ```sudo nvidia-ctk runtime configure --runtime=``` ```sudo systemctl restart docker```
 
 ```
-
 Then run the GPU test again.
 
 

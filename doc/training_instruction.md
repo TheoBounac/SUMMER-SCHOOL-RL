@@ -26,7 +26,8 @@ You should see:
 
 ---
 
-You can try to launch the training script which is incompleted (students will complete it during the summer shcoool)
+You can try to launch the training script, which is incompleted (students will complete it during the summer shcoool)
+
 Start training:
 
 ```bash

@@ -83,6 +83,14 @@ Or without the dashboard with with `--debug`:
 ```bash
 python Deploy_python/deploy.py --debug
 ```
+
+At the begining, the deploy file does not work well until you complete the workshop. So the robot will just fall after standing up:
+
+ <p align="center">
+  <img src="im4.png" width="1100">
+  <br>
+ </p>
+ 
 ## 4️⃣ 🚀 Complete the workshop
 
 This is the end of the preparation. 

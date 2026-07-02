@@ -1,6 +1,6 @@
 <h2 align="center">🐳 Docker Installation</h2>
 
-This project can be launched entirely inside Docker.
+This project can be launched entirely inside the Docker container you are about to build.
 
 The Docker image automatically installs all dependencies required for both:
 

@@ -126,7 +126,7 @@ These are the repositories we used for this workshop :
 Théo Bounaceur & Ioannis Loizou (PhD student)  
 Laboratory **LORIA** (CNRS / University of Lorraine), Nancy, France  
 🧬 Field: Reinforcement Learning · Unitree robots · Unitree SDK2 · IsaacLab · IsaacGym · MuJoCo · ROS2  
-📫 Contact: theo.bounaceur@loria.fr & ioannis.loizou@loria.fr
+📫 Contact: theo.bounaceur@loria.fr & ioannis.loizou@inria.fr
 
 **Supervisors / Advisors:**  
 - Adrien Guenard  

@@ -85,7 +85,7 @@ SUMMER-SCHOOL-RL/
 
 
 # 📝 Installation guide
-For the summer school tutorial, students are required to install this workshop using Docker. Please follow this guide:
+For the summer school tutorial, students are required to install this workshop using Docker. Please follow this guide. It is designed so that you normally only need to copy and paste the commands into the terminal. If you have any trouble, please contact us theo.bounaceur@loria.fr & ioannis.loizou@loria.fr.
 **🐳 Docker** : [📘 Docker Installation](doc/Docker.md)
 
 Once the docker is installed you can try to launch it:

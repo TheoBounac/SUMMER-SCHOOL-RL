@@ -34,10 +34,10 @@ See the command instruction guide for MuJoCo:
   <img src="bonne.png" width="900">
   <br>
  </p>
-
- # Important
  
+ # Important 
  Here, MuJoCo works exactly as it would be in real life: You should not exit the mujoco page, it works as if you had the robot next to you, just reset the robot each time you launch the deploy.py file for the workshop.
+ 
 ---
 
 ## 2️⃣ Open a second terminal inside the same container

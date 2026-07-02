@@ -1,4 +1,5 @@
 # 🤖 Deployment
+(Make sure you completed the docker installation)
 
 ## 1️⃣ 🏗️ Launch the MuJoCo simulator
 

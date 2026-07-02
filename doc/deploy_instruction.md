@@ -95,7 +95,7 @@ When you complete all the tasks, the robot should walk and you should see :
 
 <table align="center" style="border-collapse:collapse;">
 <th style="width:30%; text-align:center;">
-  <div style="display:inline-block; width:200px;">Deploy on Mujoco</div>
+  <div style="display:inline-block; width:200px;">Deploy file completed</div>
 </th>
 
   <tr>

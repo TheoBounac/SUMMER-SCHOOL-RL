@@ -67,5 +67,8 @@ You should now be inside the Docker container:
 ```bash
 root@xxxxx:/workspace/SUMMER-SCHOOL-RL#
 ```
+
+---
+
 You can now test Part 1 and Part 2 to make sure everything works as expected.
 

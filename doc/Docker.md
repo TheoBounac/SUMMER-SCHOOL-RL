@@ -54,7 +54,7 @@ docker compose -f docker/docker-compose.yml build
 
 > **Note:** The first build can take several minutes (30min - 1h) because it installs MJLab, MuJoCo Warp, Unitree SDK2, CycloneDDS, and all Python dependencies.
 
-# If uv fails with a network timeout, increase the HTTP timeout:
+> **Note:** If uv fails with a network timeout, increase the HTTP timeout:
 export UV_HTTP_TIMEOUT=300s
 ---
 

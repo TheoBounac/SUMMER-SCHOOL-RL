@@ -1,4 +1,4 @@
-"""Unitree Go2 velocity environment configurations. File adapted from MJlab repository"""
+"""Unitree Go2 velocity environment configurations. File adapted from MJlab repository (https://github.com/mujocolab/mjlab)"""
 
 import math
 from typing import Literal, TYPE_CHECKING
@@ -7,16 +7,22 @@ from unitree_go2.go2_constants import (
     GO2_ACTION_SCALE,
     get_go2_robot_cfg,
 )
+from . import custom_mdp
 
 from mjlab.envs import ManagerBasedRlEnvCfg
-from mjlab.envs import mdp as envs_mdp
+from mjlab.envs.mdp import dr
 from mjlab.envs.mdp.actions import JointPositionActionCfg
 from mjlab.managers import TerminationTermCfg
+from mjlab.managers.action_manager import ActionTermCfg
+from mjlab.managers.command_manager import CommandTermCfg
+from mjlab.managers.curriculum_manager import CurriculumTermCfg
 from mjlab.managers.event_manager import EventTermCfg
+from mjlab.managers.metrics_manager import MetricsTermCfg
 from mjlab.managers.reward_manager import RewardTermCfg
-from mjlab.managers.observation_manager import ObservationTermCfg
+from mjlab.managers.observation_manager import ObservationGroupCfg, ObservationTermCfg
 from mjlab.utils.noise import UniformNoiseCfg as Unoise
 from mjlab.managers.scene_entity_config import SceneEntityCfg
+from mjlab.scene import SceneCfg
 from mjlab.sensor import (
     ContactMatch,
     ContactSensorCfg,
@@ -24,94 +30,58 @@ from mjlab.sensor import (
     RingPatternCfg,
     TerrainHeightSensorCfg,
 )
+from mjlab.sim import MujocoCfg, SimulationCfg
 from mjlab.tasks.velocity import mdp
 from mjlab.tasks.velocity.mdp import UniformVelocityCommandCfg
-from mjlab.tasks.velocity.velocity_env_cfg import make_velocity_env_cfg
-
-import torch
-
-
-def phase(env: ManagerBasedRlEnvCfg, period: float, command_name: str) -> torch.Tensor:
-    global_phase = (env.episode_length_buf * env.step_dt) % period / period
-    phase = torch.zeros(env.num_envs, 2, device=env.device)
-    phase[:, 0] = torch.sin(global_phase * torch.pi * 2.0)
-    phase[:, 1] = torch.cos(global_phase * torch.pi * 2.0)
-    stand_mask = torch.linalg.norm(env.command_manager.get_command(command_name), dim=1) < 0.1
-    phase = torch.where(stand_mask.unsqueeze(1), torch.zeros_like(phase), phase)
-    return phase
-
-def feet_gait(
-        env: ManagerBasedRlEnvCfg,
-        period: float,
-        offset: list[float],
-        threshold: float,
-        command_threshold: float,
-        command_name: str,
-        sensor_name: str,
-) -> torch.Tensor:
-    sensor: ContactSensorCfg = env.scene[sensor_name]
-    is_contact = sensor.data.current_contact_time > 0
-    global_phase = ((env.episode_length_buf * env.step_dt) / period).unsqueeze(1)
-    offsets = torch.as_tensor(offset, device=env.device, dtype=global_phase.dtype).view(1, -1)
-    leg_phase = (global_phase + offsets) % 1.0
-    is_stance = (leg_phase < threshold)
-    reward = (is_stance == is_contact).float().mean(dim=1)
-    if command_name is not None:
-        command = env.command_manager.get_command(command_name)
-        if command is not None:
-            linear_norm = torch.norm(command[:, :2], dim=1)
-            angular_norm = torch.abs(command[:, 2])
-            total_command = linear_norm + angular_norm
-            scale = (total_command > command_threshold).float()
-            reward *= scale
-    return reward
+from mjlab.terrains import TerrainEntityCfg
+from mjlab.viewer import ViewerConfig
 
 
 def unitree_go2_flat_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     """Create Unitree Go2 flat terrain velocity configuration."""
 
-    cfg = make_velocity_env_cfg()
+    ##
+    # Sensors
+    ##
 
-    cfg.scene.entities = {"robot": get_go2_robot_cfg()}
-    cfg.sim.njmax = 300
-    cfg.sim.mujoco.ccd_iterations = 50
-    cfg.sim.contact_sensor_maxmatch = 64
-    cfg.sim.nconmax = None
-
-    # Set terrain to plane and remove terrain generator for flat env.
-    if cfg.scene.terrain is not None:
-        cfg.scene.terrain.terrain_type = "plane"
-        cfg.scene.terrain.terrain_generator = None
-    
-    # Disable terrain curriculum.
-    cfg.curriculum.pop("terrain_levels", None)
-
-    # Remove raycast sensors and collision sensors not needed on flat.
-    remove_sensors = {
-        "terrain_scan",
-    }
-    cfg.scene.sensors = tuple(s for s in (cfg.scene.sensors or ()) if s.name not in remove_sensors)
-
-    foot_names = ("FR", "FL", "RR", "RL")
     site_names = ("FR", "FL", "RR", "RL")
-    geom_names = tuple(f"{name}_foot_collision" for name in foot_names)
+    geom_names = tuple(f"{name}_foot_collision" for name in site_names)
 
-    # Wire foot height scan to per-foot sites.
-    for sensor in cfg.scene.sensors or ():
-        if sensor.name == "foot_height_scan":
-            assert isinstance(sensor, TerrainHeightSensorCfg)
-            sensor.frame = tuple(ObjRef(type="site", name=s, entity="robot") for s in site_names)
-            sensor.pattern = RingPatternCfg.single_ring(radius=0.04, num_samples=4)
-
-    feet_ground_cfg = ContactSensorCfg(
-        name="feet_ground_contact",
-        primary=ContactMatch(mode="geom", pattern=geom_names, entity="robot"),
-        secondary=ContactMatch(mode="body", pattern="terrain"),
-        fields=("found", "force"),
-        reduce="netforce",
-        num_slots=1,
-        track_air_time=True,
+    foot_height_scan = TerrainHeightSensorCfg(
+        name="foot_height_scan",
+        frame=tuple(ObjRef(type="site", name=s, entity="robot") for s in site_names),
+        pattern=RingPatternCfg.single_ring(radius=0.04, num_samples=4),
+        ray_alignment="yaw",
+        max_distance=1.0,
+        exclude_parent_body=True,
+        include_geom_groups=(0,),  # Terrain only.
+        debug_vis=False,
+        viz=TerrainHeightSensorCfg.VizCfg(
+            show_rays=False,
+            hit_color=(1.0, 0.0, 1.0, 0.8),  # Magenta rays.
+            hit_sphere_color=(1.0, 0.0, 1.0, 1.0),
+        ),
     )
+
+    # TODO(Exercise 2 - Contact Sensor): define feet_ground_cfg.
+    #
+    # This sensor detects contact between the feet and the terrain, and is
+    # the basis for several observations and rewards below (foot_air_time,
+    # foot_contact, foot_contact_forces, foot_swing_height, foot_slip,
+    # soft_landing). Those terms look the sensor up by name, so it MUST be
+    # named exactly "feet_ground_contact".
+    #
+    # Fill in a ContactSensorCfg with:
+    #   - name="feet_ground_contact"
+    #   - primary: match the foot collision geoms (mode="geom",
+    #     pattern=geom_names, entity="robot") — geom_names is defined above
+    #   - secondary: match the terrain body (mode="body", pattern="terrain")
+    #   - fields=("found", "force")
+    #   - reduce="netforce" (collapse contacts per foot into a single value)
+    #   - num_slots=1
+    #   - track_air_time=True (required by the foot_air_time observation)
+    raise NotImplementedError("TODO: implement feet_ground_cfg (see comment above)")
+
     nonfeet_ground_cfg = ContactSensorCfg(
         name="nonfeet_ground_touch",
         primary=ContactMatch(
@@ -129,175 +99,418 @@ def unitree_go2_flat_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
         history_length=4,
     )
 
-    # NOTE: we are missing a trunk assembly to do self-collision with
-    # self_collision_cfg = ContactSensorCfg(
-    #     name="self_collision",
-    #     primary=ContactMatch(mode="subtree", pattern="base_link", entity="robot"),
-    #     secondary=ContactMatch(mode="subtree", pattern="base_link", entity="robot"),
-    #     fields=("found", "force"),
-    #     reduce="none",
-    #     num_slots=1,
-    #     history_length=4,
-    # )
-
-    cfg.scene.sensors = (cfg.scene.sensors or ()) + (
-        feet_ground_cfg,
-        nonfeet_ground_cfg,
-        # self_collision_cfg,
+    scene = SceneCfg(
+        terrain=TerrainEntityCfg(terrain_type="plane"),
+        entities={"robot": get_go2_robot_cfg()},
+        sensors=(foot_height_scan, feet_ground_cfg, nonfeet_ground_cfg),
+        num_envs=1,
+        extent=2.0,
     )
 
-    if cfg.scene.terrain is not None and cfg.scene.terrain.terrain_generator is not None:
-        cfg.scene.terrain.terrain_generator.curriculum = True
+    ##
+    # Observations
+    ##
 
-    cfg.observations["actor"].terms = {
-    "base_ang_vel": ObservationTermCfg(
-      func=mdp.builtin_sensor,
-      params={"sensor_name": "robot/imu_ang_vel"},
-      noise=Unoise(n_min=-0.2, n_max=0.2),
-    ),
-    "projected_gravity": ObservationTermCfg(
-      func=mdp.projected_gravity,
-      noise=Unoise(n_min=-0.05, n_max=0.05),
-    ),
-    "command": ObservationTermCfg(
-      func=mdp.generated_commands,
-      params={"command_name": "twist"},
-    ),
-    "phase": ObservationTermCfg(
-      func=phase,
-      params={"period": 0.6, "command_name": "twist"},
-    ),
-    "joint_pos": ObservationTermCfg(
-      func=mdp.joint_pos_rel,
-      noise=Unoise(n_min=-0.01, n_max=0.01),
-    ),
-    "joint_vel": ObservationTermCfg(
-      func=mdp.joint_vel_rel,
-      noise=Unoise(n_min=-1.5, n_max=1.5),
-    ),
-    "actions": ObservationTermCfg(func=mdp.last_action),
-    }
-    
-    # del cfg.observations["actor"].terms["height_scan"]
-    del cfg.observations["critic"].terms["height_scan"]
+    # TODO(Exercise 3 - Observation): add a "joint_vel" term to actor_terms.
+    #
+    # Mirror the "joint_pos" term below, but for joint velocities:
+    #   - func=mdp.joint_vel_rel
+    #   - noise: joint velocities are noisier than positions, so we need to use a
+    #     wider Unoise range than joint_pos uses (+/-1.5 rad/s)
+    #   - scale: A value that brings joint velocities to roughfggddgdgdggd v0ly the
+    #     same order of magnitude as the other observation terms (e.g. ~0.05)
+    # Add it with ObservationTermCfg(...) right after the joint_pos term.
+    raise NotImplementedError("TODO: add a 'joint_vel' observation term to actor_terms (see comment above)")
 
-    joint_pos_action = cfg.actions["joint_pos"]
-    assert isinstance(joint_pos_action, JointPositionActionCfg)
-    joint_pos_action.scale = GO2_ACTION_SCALE
-
-    cfg.viewer.body_name = "base_link"
-    cfg.viewer.distance = 1.5
-    cfg.viewer.elevation = -10.0
-
-    # Replace the base foot_friction with per-axis friction events for condim 6.
-    del cfg.events["foot_friction"]
-    cfg.events["foot_friction_slide"] = EventTermCfg(
-        mode="startup",
-        func=envs_mdp.dr.geom_friction,
-        params={
-            "asset_cfg": SceneEntityCfg("robot", geom_names=geom_names),
-            "operation": "abs",
-            "axes": [0],
-            "ranges": (0.3, 1.5),
-            "shared_random": True,
-        },
-    )
-    cfg.events["foot_friction_spin"] = EventTermCfg(
-        mode="startup",
-        func=envs_mdp.dr.geom_friction,
-        params={
-            "asset_cfg": SceneEntityCfg("robot", geom_names=geom_names),
-            "operation": "abs",
-            "distribution": "log_uniform",
-            "axes": [1],
-            "ranges": (1e-4, 2e-2),
-            "shared_random": True,
-        },
-    )
-    cfg.events["foot_friction_roll"] = EventTermCfg(
-        mode="startup",
-        func=envs_mdp.dr.geom_friction,
-        params={
-            "asset_cfg": SceneEntityCfg("robot", geom_names=geom_names),
-            "operation": "abs",
-            "distribution": "log_uniform",
-            "axes": [2],
-            "ranges": (1e-5, 5e-3),
-            "shared_random": True,
-        },
-    )
-    cfg.events["base_com"].params["asset_cfg"].body_names = ("base_link",)
-
-    cfg.rewards["pose"].params["std_standing"] = {
-        r".*(FR|FL|RR|RL)_(hip|thigh)_joint.*": 0.05,
-        r".*(FR|FL|RR|RL)_calf_joint.*": 0.1,
-    }
-    cfg.rewards["pose"].params["std_walking"] = {
-        r".*(FR|FL|RR|RL)_(hip|thigh)_joint.*": 0.3,
-        r".*(FR|FL|RR|RL)_calf_joint.*": 0.6,
-    }
-    cfg.rewards["pose"].params["std_running"] = {
-        r".*(FR|FL|RR|RL)_(hip|thigh)_joint.*": 0.3,
-        r".*(FR|FL|RR|RL)_calf_joint.*": 0.6,
+    actor_terms = {
+        "base_ang_vel": ObservationTermCfg(
+            func=mdp.builtin_sensor,
+            params={"sensor_name": "robot/imu_ang_vel"},
+            noise=Unoise(n_min=-0.2, n_max=0.2),
+            scale=0.25,
+        ),
+        "projected_gravity": ObservationTermCfg(
+            func=mdp.projected_gravity,
+            noise=Unoise(n_min=-0.05, n_max=0.05),
+            scale=1.0,
+        ),
+        "command": ObservationTermCfg(
+            func=mdp.generated_commands,
+            params={"command_name": "twist"},
+            scale=(3.0, 2.0, 0.5),
+        ),
+        "joint_pos": ObservationTermCfg(
+            func=mdp.joint_pos_rel,
+            noise=Unoise(n_min=-0.01, n_max=0.01),
+            scale=1.0,
+        ),
+        "actions": ObservationTermCfg(
+            func=mdp.last_action,
+            scale=1.0,
+        ),
     }
 
-    cfg.rewards["upright"].params["asset_cfg"].body_names = ("base_link",)
-    cfg.rewards["body_ang_vel"].params["asset_cfg"].body_names = ("base_link",)
+    critic_terms = {
+        **actor_terms,
+        "foot_height": ObservationTermCfg(
+            func=mdp.foot_height,
+            params={"sensor_name": "foot_height_scan"},
+        ),
+        "foot_air_time": ObservationTermCfg(
+            func=mdp.foot_air_time,
+            params={"sensor_name": "feet_ground_contact"},
+        ),
+        "foot_contact": ObservationTermCfg(
+            func=mdp.foot_contact,
+            params={"sensor_name": "feet_ground_contact"},
+        ),
+        "foot_contact_forces": ObservationTermCfg(
+            func=mdp.foot_contact_forces,
+            params={"sensor_name": "feet_ground_contact"},
+        ),
+    }
 
-    for reward_name in ["foot_clearance", "foot_slip"]:
-        cfg.rewards[reward_name].params["asset_cfg"].site_names = site_names
-    
-    cfg.rewards["feet_gait"] = RewardTermCfg(
-                func=feet_gait,
-                weight=0.5,
-                params={
-                    "period": 0.6,
-                    "offset": [0.0, 0.5],
-                    "threshold": 0.56,
-                    "command_threshold": 0.1,
-                    "command_name": "twist",
-                    "sensor_name": "feet_ground_contact",
-                }
-                )
-    cfg.rewards["feet_gait"].params["offset"] = [0.0, 0.5, 0.5, 0.0]
+    observations = {
+        "actor": ObservationGroupCfg(
+            terms=actor_terms,
+            concatenate_terms=True,
+            enable_corruption=not play,
+        ),
+        "critic": ObservationGroupCfg(
+            terms=critic_terms,
+            concatenate_terms=True,
+            enable_corruption=False,
+        ),
+    }
 
-    cfg.rewards["body_ang_vel"].weight = 0.0
-    cfg.rewards["angular_momentum"].weight = 0.0
-    cfg.rewards["air_time"].weight = 0.0
+    ##
+    # Metrics
+    ##
 
-    # Per-body-group collision penalties.
-    # cfg.rewards["self_collisions"] = RewardTermCfg(
-    #     func=mdp.self_collision_cost,
-    #     weight=-0.1,
-    #     params={"sensor_name": self_collision_cfg.name},
-    # )
-    # cfg.rewards["shank_collision"] = RewardTermCfg(
-    #     func=mdp.self_collision_cost,
-    #     weight=-0.1,
-    #     params={"sensor_name": shank_ground_cfg.name},
-    # )
-    # cfg.rewards["base_link_head_collision"] = RewardTermCfg(
-    #     func=mdp.self_collision_cost,
-    #     weight=-0.1,
-    #     params={"sensor_name": base_link_head_ground_cfg.name},
-    # )
+    metrics = {
+        "mean_action_acc": MetricsTermCfg(
+            func=mdp.mean_action_acc,
+        ),
+    }
 
-    cfg.terminations["illegal_contact"] = TerminationTermCfg(
-        func=mdp.illegal_contact,
-        params={"sensor_name": nonfeet_ground_cfg.name},
+    ##
+    # Actions
+    ##
+
+    actions: dict[str, ActionTermCfg] = {
+        "joint_pos": JointPositionActionCfg(
+            entity_name="robot",
+            actuator_names=(".*",),
+            scale=GO2_ACTION_SCALE,  # Override per-robot.
+            use_default_offset=True,
+        )
+    }
+
+    ##
+    # Commands
+    ##
+
+    commands: dict[str, CommandTermCfg] = {
+        "twist": UniformVelocityCommandCfg(
+            entity_name="robot",
+            resampling_time_range=(3.0, 8.0),
+            rel_standing_envs=0.1,
+            rel_heading_envs=0.3,
+            rel_forward_envs=0.2,
+            heading_command=True,
+            heading_control_stiffness=0.5,
+            debug_vis=True,
+            ranges=UniformVelocityCommandCfg.Ranges(
+                lin_vel_x=(-1.0, 1.0),
+                lin_vel_y=(-1.0, 1.0),
+                ang_vel_z=(-0.5, 0.5),
+                heading=(-math.pi, math.pi),
+            ),
+        )
+    }
+
+    ##
+    # Events
+    ##
+
+    # TODO(Exercise 4 - Event): add a "push_robot" event to events.
+    #
+    # This applies a velocity perturbation to the robot during an episode (domain
+    # randomization for robustness to external pushes). Mirror reset_base /
+    # reset_robot_joints below for EventTermCfg structure, but note this one
+    # uses a different mode:
+    #   - func=mdp.push_by_setting_velocity
+    #   - mode="interval"
+    #   - interval_range_s=(1.0, 3.0)
+    #   - params={"velocity_range": {
+    #         "x": (-0.5, 0.5), "y": (-0.5, 0.5), "z": (-0.4, 0.4),
+    #         "roll": (-0.52, 0.52), "pitch": (-0.52, 0.52), "yaw": (-0.78, 0.78),
+    #     }}
+    # Add it with EventTermCfg(...)
+    raise NotImplementedError("TODO: add a 'push_robot' event to events (see comment above)")
+
+    events = {
+        "reset_base": EventTermCfg(
+            func=mdp.reset_root_state_uniform,
+            mode="reset",
+            params={
+                "pose_range": {
+                    "x": (-0.5, 0.5),
+                    "y": (-0.5, 0.5),
+                    "z": (0.01, 0.05),
+                    "yaw": (-3.14, 3.14),
+                },
+                "velocity_range": {},
+            },
+        ),
+        "reset_robot_joints": EventTermCfg(
+            func=mdp.reset_joints_by_offset,
+            mode="reset",
+            params={
+                "position_range": (0.0, 0.0),
+                "velocity_range": (0.0, 0.0),
+                "asset_cfg": SceneEntityCfg("robot", joint_names=(".*",)),
+            },
+        ),
+        "foot_friction_slide": EventTermCfg(
+            mode="startup",
+            func=dr.geom_friction,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", geom_names=geom_names),
+                "operation": "abs",
+                "axes": [0],
+                "ranges": (0.3, 1.5),
+                "shared_random": True,
+            },
+        ),
+        "foot_friction_spin": EventTermCfg(
+            mode="startup",
+            func=dr.geom_friction,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", geom_names=geom_names),
+                "operation": "abs",
+                "distribution": "log_uniform",
+                "axes": [1],
+                "ranges": (1e-4, 2e-2),
+                "shared_random": True,
+            },
+        ),
+        "foot_friction_roll": EventTermCfg(
+            mode="startup",
+            func=dr.geom_friction,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", geom_names=geom_names),
+                "operation": "abs",
+                "distribution": "log_uniform",
+                "axes": [2],
+                "ranges": (1e-5, 5e-3),
+                "shared_random": True,
+            },
+        ),
+        "encoder_bias": EventTermCfg(
+            mode="startup",
+            func=dr.encoder_bias,
+            params={
+                "asset_cfg": SceneEntityCfg("robot"),
+                "bias_range": (-0.015, 0.015),
+            },
+        ),
+        "base_com": EventTermCfg(
+            mode="startup",
+            func=dr.body_com_offset,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", body_names=("base_link",)),  # Set per-robot.
+                "operation": "add",
+                "ranges": {
+                    0: (-0.025, 0.025),
+                    1: (-0.025, 0.025),
+                    2: (-0.03, 0.03),
+                },
+            },
+        ),
+    }
+
+
+    ##
+    # Rewards
+    ##
+
+    # TODO(Exercise 5 - Reward): add a "track_angular_velocity" term to rewards.
+    #
+    # Mirror "track_linear_velocity" below (same RewardTermCfg shape):
+    #   - func=custom_mdp.track_angular_velocity
+    #   - weight=2.0 (same order of magnitude as track_linear_velocity)
+    #   - params={"command_name": "twist", "std": math.sqrt(0.5)}
+    # Add it with RewardTermCfg(...)
+    raise NotImplementedError(
+        "TODO: add a 'track_angular_velocity' reward to rewards (see comment above)"
     )
 
-    # On flat terrain fell_over is sufficient;
-    cfg.terminations.pop("out_of_terrain_bounds", None)
-    cfg.terminations["fell_over"] = TerminationTermCfg(
-        func=mdp.bad_orientation,
-        params={"limit_angle": math.radians(70.0)},
+    rewards = {
+        "track_linear_velocity": RewardTermCfg(
+            func=mdp.track_linear_velocity,
+            weight=2.0,
+            params={"command_name": "twist", "std": math.sqrt(0.25)},
+        ),
+        "upright": RewardTermCfg(
+            func=mdp.upright,
+            weight=1.0,
+            params={
+                "std": math.sqrt(0.2),
+                "asset_cfg": SceneEntityCfg("robot", body_names=("base_link",)),
+            },
+        ),
+        "pose": RewardTermCfg(
+            func=mdp.variable_posture,
+            weight=1.0,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", joint_names=(".*",)),
+                "command_name": "twist",
+                "std_standing": {
+                    r".*(FR|FL|RR|RL)_(hip|thigh)_joint.*": 0.05,
+                    r".*(FR|FL|RR|RL)_calf_joint.*": 0.1,
+                },
+                "std_walking": {
+                    r".*(FR|FL|RR|RL)_(hip|thigh)_joint.*": 0.3,
+                    r".*(FR|FL|RR|RL)_calf_joint.*": 0.6,
+                },
+                "std_running": {
+                    r".*(FR|FL|RR|RL)_(hip|thigh)_joint.*": 0.3,
+                    r".*(FR|FL|RR|RL)_calf_joint.*": 0.6,
+                },
+                "walking_threshold": 0.05,
+                "running_threshold": 1.5,
+            },
+        ),
+        "dof_pos_limits": RewardTermCfg(func=mdp.joint_pos_limits, weight=-1.0),
+        "action_rate_l2": RewardTermCfg(func=mdp.action_rate_l2, weight=-0.1),
+        "foot_clearance": RewardTermCfg(
+            func=mdp.feet_clearance,
+            weight=-2.0,
+            params={
+                "target_height": 0.1,
+                "height_sensor_name": "foot_height_scan",
+                "command_name": "twist",
+                "command_threshold": 0.05,
+                "asset_cfg": SceneEntityCfg("robot", site_names=site_names),
+            },
+        ),
+        "foot_swing_height": RewardTermCfg(
+            func=mdp.feet_swing_height,
+            weight=-0.25,
+            params={
+                "sensor_name": "feet_ground_contact",
+                "height_sensor_name": "foot_height_scan",
+                "target_height": 0.1,
+                "command_name": "twist",
+                "command_threshold": 0.05,
+            },
+        ),
+        "foot_slip": RewardTermCfg(
+            func=mdp.feet_slip,
+            weight=-0.1,
+            params={
+                "sensor_name": "feet_ground_contact",
+                "command_name": "twist",
+                "command_threshold": 0.05,
+                "asset_cfg": SceneEntityCfg("robot", site_names=site_names),
+            },
+        ),
+        "soft_landing": RewardTermCfg(
+            func=mdp.soft_landing,
+            weight=-1e-5,
+            params={
+                "sensor_name": "feet_ground_contact",
+                "command_name": "twist",
+                "command_threshold": 0.05,
+            },
+        ),
+    }
+
+
+    ##
+    # Terminations
+    ##
+
+    terminations = {
+        "time_out": TerminationTermCfg(func=mdp.time_out, time_out=True),
+        # func points at custom_mdp.bad_orientation, which is Exercise 8 (see
+        # custom_mdp.py) — the wiring here is already done for you, but the
+        # function body raises NotImplementedError until you write it.
+        "fell_over": TerminationTermCfg(
+            func=custom_mdp.bad_orientation,
+            params={"limit_angle": math.radians(70.0)},
+        ),
+        "illegal_contact": TerminationTermCfg(
+            func=mdp.illegal_contact,
+            params={"sensor_name": nonfeet_ground_cfg.name},
+        ),
+    }
+
+    ##
+    # Curriculum
+    ##
+
+    curriculum: dict[str, CurriculumTermCfg] = {}
+
+    # TODO(Exercise 6 - Curriculum): add a "command_vel" curriculum term.
+    #
+    # This widens the commanded velocity range as training progresses,
+    # starting easy and ramping up difficulty (step is in env steps:
+    # num_steps_per_env=24 per iteration, see rl_cfg.py). Fill in a
+    # CurriculumTermCfg with:
+    #   - func=mdp.commands_vel
+    #   - params={"command_name": "twist", "velocity_stages": [
+    #         {"step": 0, "lin_vel_x": (-1.0, 1.0), "ang_vel_z": (-0.5, 0.5)},
+    #         {"step": 5000 * 24, "lin_vel_x": (-1.5, 2.0), "ang_vel_z": (-0.7, 0.7)},
+    #         {"step": 10000 * 24, "lin_vel_x": (-2.0, 3.0)},
+    #     ]}
+    # Add it with: curriculum["command_vel"] = CurriculumTermCfg(...)
+    raise NotImplementedError(
+        "TODO: add a 'command_vel' curriculum term to curriculum (see comment above)"
+    )
+
+    ##
+    # Assemble base config
+    ##
+
+    cfg = ManagerBasedRlEnvCfg(
+        scene=scene,
+        observations=observations,
+        actions=actions,
+        commands=commands,
+        events=events,
+        rewards=rewards,
+        terminations=terminations,
+        curriculum=curriculum,
+        metrics=metrics,
+        viewer=ViewerConfig(
+            origin_type=ViewerConfig.OriginType.ASSET_BODY,
+            entity_name="robot",
+            body_name="base_link",
+            distance=1.5,
+            elevation=-10.0,
+            azimuth=90.0,
+        ),
+        sim=SimulationCfg(
+            nconmax=None,
+            njmax=300,
+            contact_sensor_maxmatch=64,
+            mujoco=MujocoCfg(
+                timestep=0.005,
+                iterations=10,
+                ls_iterations=20,
+                ccd_iterations=50,
+            ),
+        ),
+        decimation=4,
+        episode_length_s=20.0,
     )
 
     if play:
-        twist_cmd = cfg.commands["twist"]
-        assert isinstance(twist_cmd, UniformVelocityCommandCfg)
-        twist_cmd.ranges.lin_vel_x = (-1.5, 2.0)
-        twist_cmd.ranges.ang_vel_z = (-0.7, 0.7)
+        cfg.episode_length_s = int(1e9)
+        cfg.observations["actor"].enable_corruption = False
+        cfg.events.pop("push_robot", None)
+        pass
 
     return cfg

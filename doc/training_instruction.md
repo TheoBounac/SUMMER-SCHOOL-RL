@@ -11,6 +11,8 @@ You should see:
   <img src="docker1.png" width="900">
 </p>
 
+---
+
 Launch the Go2 environment with a random policy:
 
 ```bash
@@ -22,6 +24,9 @@ You should see:
   <img src="docker3.png" width="900">
 </p>
 
+---
+
+You can try to launch the training script which is incompleted (students will complete it during the summer shcoool)
 Start training:
 
 ```bash

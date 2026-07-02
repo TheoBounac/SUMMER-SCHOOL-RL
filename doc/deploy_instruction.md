@@ -71,6 +71,7 @@ Inside the second Docker terminal:
 cd /workspace/SUMMER-SCHOOL-RL/2.Deploy
 
 python Deploy_python/deploy.py
+MAKE SURE THE ROBOT IS LAID DOWN, RESET WITH ELASTIC BAND DISABLED.
 ```
 You should see :
  <p align="center">

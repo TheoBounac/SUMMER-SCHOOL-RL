@@ -22,8 +22,12 @@ You should see :
   <br>
  </p>
  <p align="center">
+The robot is hold by an invisible elastic band :
+  
 Press <kbd>9</kbd> to activate or deactivate the elastic band. When activated you can change the force of the elastic: SPAM <kbd>7</kbd> to raise, and SPAM <kbd>8</kbd>  to lower the robot.
 </p>
+
+Preset <kbd>RESET</kbd> button in the menu at the left, to reset the robot position (make sure the elastic band is deactivate with <kbd>9</kbd> button).
 
 Command instruction:
  <p align="center">

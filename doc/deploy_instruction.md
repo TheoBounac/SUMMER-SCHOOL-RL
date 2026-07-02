@@ -29,7 +29,7 @@ Press <kbd>9</kbd> to activate or deactivate the elastic band. When activated yo
 
 Press <kbd>RESET</kbd> button in the menu at the left, to reset the robot position (make sure the elastic band is deactivate by pressing <kbd>9</kbd> on your keyboard).
 
-Command instruction:
+See the command instruction guide for MuJoCo:
  <p align="center">
   <img src="bonne.png" width="900">
   <br>

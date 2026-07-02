@@ -85,8 +85,8 @@ class Controller(DashboardMixin):
         self.ang_vel = np.zeros(3, dtype=np.float32)
         self.quat = np.zeros(4, dtype=np.float32)
         self.gravity = np.zeros(3, dtype=np.float32)
-        self.qj_obs = np.zeros(NUM_ACTIONS, dtype=np.float32)
-        self.dqj_obs = np.zeros(NUM_ACTIONS, dtype=np.float32)
+        self.dof_pos = np.zeros(NUM_ACTIONS, dtype=np.float32)
+        self.dof_vel = np.zeros(NUM_ACTIONS, dtype=np.float32)
 
         self.low_cmd = unitree_go_msg_dds__LowCmd_()
         self.low_state = unitree_go_msg_dds__LowState_()
@@ -159,27 +159,35 @@ class Controller(DashboardMixin):
         # ============================== PART 1. OBSERVATION ==================================== #
         ################################# USEFUL VARIABLES ########################################
         low_state = self.low_state                                                                #
-        Vx = self.remote_controller.ly                                                            #
-        Vy = -self.remote_controller.lx                                                           #
-        Wz = -self.remote_controller.rx                                                           #
+        ang_vel_scale = 0.25                                                                      #
+                                                                                                  #
+                                                                                                  #
+        gravity_scale = 1                                                                         #
+                                                                                                  #
+                                                                                                  #
+        vx = self.remote_controller.ly                                                            #
+        vy = -self.remote_controller.lx                                                           #
+        wz = -self.remote_controller.rx                                                           #
+        vx_scale = 3.0                                                                            #
+        vy_scale = 2.0                                                                            #
+        wz_scale = 0.5                                                                            #
+                                                                                                  #
                                                                                                   #
         LEG_JOINT2MOTOR_IDX = [3, 4, 5,                                                           #
                                0, 1, 2,                                                           #
                                9, 10, 11,                                                         #
                                6, 7, 8]                                                           #
-                                                                                                  #
-        DEFAULT_ANGLES = np.array([                                                               #
+        default_angles = np.array([                                                               #
                                     0.1,  0.8, -1.5,                                              #
                                    -0.1,  0.8, -1.5,                                              #
                                     0.1,  1.0, -1.5,                                              #
                                    -0.1,  1.0, -1.5,                                              #
                                   ], dtype=np.float32)                                            #
-                                                                                                  #
-        ang_vel_scale = 0.25                                                                      #
-        grav_scale = 1                                                                            #
-        CMD_SCALE = [3.0, 2.0, 0.5]                                                               #
         pos_scale = 1.0                                                                           #
+                                                                                                  #
+                                                                                                  #
         vel_scale = 0.05                                                                          #
+                                                                                                  #
         ###########################################################################################
 
         #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
@@ -198,12 +206,12 @@ class Controller(DashboardMixin):
             self.command[1] = None                                            
             self.command[2] = None
 
-        # TODO [4] Read joint positions and velocities and add the offset
+        # TODO [4] Read dof positions and dof velocities 
         self.dof_pos = None
         self.dof_vel = None
 
-        # TODO [5] Read last action
-        self.last_action = None
+        # TODO [5] Read last action (Nothing to do here: observation remain wrong until you do the policy inference in part 2)
+        self.last_action = self.action
         
         # TODO [6] Fill the obs with the right observations values
         self.obs[:3] = None                                        
@@ -235,26 +243,26 @@ class Controller(DashboardMixin):
 
         # ================================ PART 2. POLICY =================================== #
         ################################# USEFUL VARIABLES ####################################
-        DEFAULT_ANGLES = np.array([                                                           #
+        default_angles = np.array([                                                           #
                                     0.1,  0.8, -1.5,                                          #
                                    -0.1,  0.8, -1.5,                                          #
                                     0.1,  1.0, -1.5,                                          #
                                    -0.1,  1.0, -1.5,                                          #
                                   ], dtype=np.float32)                                        #
                                                                                               #
-        ACTION_SCALE = 0.25                                                                   #
+        action_scale = 0.25                                                                   #
         ####################################################################################### 
 
         # TODO [7] Inference of the policy with the observation tensor                                                                                                                
         action = None          
 
-        # Put it in the right format for the robot                                           
+        # This line just put it in the format expected by the robot                                           
         if action is None:
             self.action = None
         else:
-            self.action = action[0].detach().cpu().numpy().astype(np.float32).squeeze()   
+            self.action = action.detach().cpu().numpy().astype(np.float32).squeeze()   
 
-        # TODO [8] Fill the target command with the policy output (action)                                                                                
+        # TODO [8] Fill the target command using the policy output (action)                                                                                
         self.target_position = None                
         # =================================================================================== #
 

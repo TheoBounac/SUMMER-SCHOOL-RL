@@ -87,7 +87,7 @@ python Deploy_python/deploy.py --debug
 At the begining, the deploy file does not work well until you complete the workshop. So the robot will just fall after standing up:
 
  <p align="center">
-  <img src="im4.png" width="1100">
+  <img src="im4.png" width="800">
   <br>
  </p>
  

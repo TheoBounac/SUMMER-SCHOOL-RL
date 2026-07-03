@@ -319,7 +319,8 @@ class Controller(DashboardMixin):
         self.action = None          
 
         # This line just put it in the format expected by the robot (Do not modify)                                          
-        self.action = self.action.detach().cpu().numpy().astype(np.float32).squeeze()   
+        self.action = self.action.detach().cpu().numpy().astype(np.float32).squeeze()
+        action = self.action   
 
         # TODO [8] Fill the target position using the policy output (action)                                                                                
         self.target_joint_position = None                
@@ -335,6 +336,8 @@ class Controller(DashboardMixin):
                            0, 1, 2,                                                         #
                            9, 10, 11,                                                       #
                            6, 7, 8]                                                         #
+                                                                                            #
+        target_joint_position = self.target_joint_position                                  #
                                                                                             #
         KPS = [20.0] * 12                                                                   #
         KDS = [0.5] * 12                                                                    #

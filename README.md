@@ -87,9 +87,11 @@ SUMMER-SCHOOL-RL/
 # 📝 Installation guide
 For the summer school tutorial, students are required to install this workshop using Docker. Please follow this guide. It is designed so that you normally only need to copy and paste the commands into the terminal. If you have any trouble, please contact us theo.bounaceur@loria.fr & ioannis.loizou@inria.fr.
 
-**🐳 Docker** : [📘 Docker Installation](doc/Docker.md)
+You should normally follow the instructions at [https://github.com/aixhri-summer-school-2026/docker-tutorials/tree/main](https://github.com/aixhri-summer-school-2026/docker-tutorials/tree/main).
 
-Once the docker is installed you can try to launch it:
+Otherwise, you can also install only this workshop following this instruction : **🐳 Docker** : [📘 Docker Installation](doc/Docker.md)
+
+In any case, once the docker is installed you can try to launch it:
 
 🏋️ Training (MJLab)
 

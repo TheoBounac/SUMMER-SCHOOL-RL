@@ -79,7 +79,7 @@ class Controller(DashboardMixin):
         self.action = np.zeros(NUM_ACTIONS, dtype=np.float32)
         self.target_dof_pos = DEFAULT_ANGLES.copy()
         self.obs = np.zeros(NUM_OBS, dtype=np.float32)
-        self.command = np.array([0.8, 0.0, 0.0], dtype=np.float32)
+        self.remote_command = np.array([0.8, 0.0, 0.0], dtype=np.float32)
         self.counter = 0
 
         self.ang_vel = np.zeros(3, dtype=np.float32)
@@ -200,11 +200,11 @@ class Controller(DashboardMixin):
         # TODO [2] Read quaternion from IMU and Compute gravity orientation from quaternion
         self.gravity = None
 
-        # TODO [3] Read command from remote controller
+        # TODO [3] Read remote_command from remote controller
         if self.use_remote_controller:                                                            
-            self.command[0] = None                                              
-            self.command[1] = None                                            
-            self.command[2] = None
+            self.remote_command[0] = None                                              
+            self.remote_command[1] = None                                            
+            self.remote_command[2] = None
 
         # TODO [4] Read dof positions and dof velocities, be careful with the order of the joints: dof_pos[i] -> motor_state[joint2motor_idx[i]]
         self.dof_pos = None
@@ -265,7 +265,7 @@ class Controller(DashboardMixin):
         else:
             self.action = action.detach().cpu().numpy().astype(np.float32).squeeze()   
 
-        # TODO [8] Fill the target command using the policy output (action)                                                                                
+        # TODO [8] Fill the target position using the policy output (action)                                                                                
         self.target_position = None                
         # =================================================================================== #
 

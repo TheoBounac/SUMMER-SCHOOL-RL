@@ -48,7 +48,7 @@ DEFAULT_ANGLES = np.array(
     ],
     dtype=np.float32,
 )
-LEG_JOINT2MOTOR_IDX = [
+JOINT2MOTOR_IDX = [
     3, 4, 5,
     0, 1, 2,
     9, 10, 11,
@@ -119,12 +119,12 @@ class Controller(DashboardMixin):
 
         init_dof_pos = np.zeros(12, dtype=np.float32)
         for i in range(12):
-            init_dof_pos[i] = self.low_state.motor_state[LEG_JOINT2MOTOR_IDX[i]].q
+            init_dof_pos[i] = self.low_state.motor_state[JOINT2MOTOR_IDX[i]].q
 
         for i in range(num_step):
             alpha = i / num_step
             for j in range(12):
-                motor_idx = LEG_JOINT2MOTOR_IDX[j]
+                motor_idx = JOINT2MOTOR_IDX[j]
                 target_pos = DEFAULT_ANGLES[j]
                 self.low_cmd.motor_cmd[motor_idx].q = init_dof_pos[j] * (1 - alpha) + target_pos * alpha
                 self.low_cmd.motor_cmd[motor_idx].dq = 0.0
@@ -139,7 +139,7 @@ class Controller(DashboardMixin):
         print("Waiting for the Button [A] signal.")
         while self.remote_controller.button[KeyMap.A] != 1:
             for i in range(12):
-                motor_idx = LEG_JOINT2MOTOR_IDX[i]
+                motor_idx = JOINT2MOTOR_IDX[i]
                 self.low_cmd.motor_cmd[motor_idx].q = DEFAULT_ANGLES[i]
                 self.low_cmd.motor_cmd[motor_idx].dq = 0.0
                 self.low_cmd.motor_cmd[motor_idx].kp = 40.0
@@ -173,11 +173,11 @@ class Controller(DashboardMixin):
         wz_scale = 0.5                                                                            #
                                                                                                   #
                                                                                                   #
-        joint2motor_idx = [3, 4, 5,                                                               #
+        JOINT2MOTOR_IDX = [3, 4, 5,                                                               #
                            0, 1, 2,                                                               #
                            9, 10, 11,                                                             #
                            6, 7, 8]                                                               #
-        default_angles = np.array([                                                               #
+        DEFAULT_ANGLES = np.array([                                                               #
                                     0.1,  0.8, -1.5,                                              #
                                    -0.1,  0.8, -1.5,                                              #
                                     0.1,  1.0, -1.5,                                              #
@@ -206,7 +206,7 @@ class Controller(DashboardMixin):
             self.remote_command[1] = None                                            
             self.remote_command[2] = None
 
-        # TODO [4] Read dof positions and dof velocities, be careful with the order of the joints: dof_pos[i] -> motor_state[joint2motor_idx[i]]
+        # TODO [4] Read dof positions and dof velocities, be careful with the order of the joints: dof_pos[i] -> motor_state[JOINT2MOTOR_IDX[i]]
         self.dof_pos = None
         self.dof_vel = None
 
@@ -246,7 +246,7 @@ class Controller(DashboardMixin):
         policy = self.policy                                                                  #
         observations = observations                                                           #
                                                                                               #
-        default_angles = np.array([                                                           #
+        DEFAULT_ANGLES = np.array([                                                           #
                                     0.1,  0.8, -1.5,                                          #
                                    -0.1,  0.8, -1.5,                                          #
                                     0.1,  1.0, -1.5,                                          #
@@ -275,7 +275,7 @@ class Controller(DashboardMixin):
 
         # ================================ PART 3. ACTION ================================= #
         ################################# USEFUL VARIABLES ##################################
-        joint2motor_idx = [3, 4, 5,                                                         #
+        JOINT2MOTOR_IDX = [3, 4, 5,                                                         #
                            0, 1, 2,                                                         #
                            9, 10, 11,                                                       #
                            6, 7, 8]                                                         #
@@ -285,14 +285,14 @@ class Controller(DashboardMixin):
         #####################################################################################
 
         # TODO [9] Fill the PID controller with the target command (target_dof_pos) and match 
-        # the indexes betwin PD controller and policy 
+        # the indexes beetwen PD controller and policy 
         for i in range(12):                                                                 
-            motor_idx = None                                              
-            self.low_cmd.motor_cmd[motor_idx].q = None      
-            self.low_cmd.motor_cmd[motor_idx].dq = None                                      
-            self.low_cmd.motor_cmd[motor_idx].kp = None                                  
-            self.low_cmd.motor_cmd[motor_idx].kd = None                               
-            self.low_cmd.motor_cmd[motor_idx].tau = 0.0 # no modify
+            motor_idx = 0.0                                            
+            self.low_cmd.motor_cmd[motor_idx].q =  0.0 # float
+            self.low_cmd.motor_cmd[motor_idx].dq = 0.0 # float                                 
+            self.low_cmd.motor_cmd[motor_idx].kp = 0.0 # float                              
+            self.low_cmd.motor_cmd[motor_idx].kd = 0.0 # float                              
+            self.low_cmd.motor_cmd[motor_idx].tau = 0.0 # do not modify
         self.send_cmd(self.low_cmd)
 
         self.counter += 1                                                         

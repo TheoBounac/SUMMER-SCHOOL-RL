@@ -27,7 +27,7 @@ parser.add_argument("--debug", action="store_true")
 args = parser.parse_args()
 DEBUG = args.debug
 
-POLICY_PATH = LEGGED_GYM_ROOT_DIR / "Deploy_python/policy/policy.pt"
+POLICY_PATH = LEGGED_GYM_ROOT_DIR / "Deploy_python/policy/trained.pt"
 NUM_ACTIONS = 12
 NUM_OBS = 45
 CONTROL_DT = 0.02
@@ -63,12 +63,71 @@ LEG_CONFIG = [
     ("RR", 9),
 ]
 
+class ObsNormalizer(torch.nn.Module):
+    def __init__(self, num_obs: int, eps: float = 1e-8) -> None:
+        super().__init__()
+        self.eps = eps
+        self.register_buffer("_mean", torch.zeros(1, num_obs))
+        self.register_buffer("_var", torch.ones(1, num_obs))
+        self.register_buffer("_std", torch.ones(1, num_obs))
+        self.register_buffer("count", torch.tensor(0.0))
+
+    def forward(self, obs: torch.Tensor) -> torch.Tensor:
+        return (obs - self._mean) / (self._std + self.eps)
+
+
+class Distribution(torch.nn.Module):
+    def __init__(self, num_actions: int) -> None:
+        super().__init__()
+        self.std_param = torch.nn.Parameter(torch.zeros(num_actions))
+
+
+class ActorNet(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.obs_normalizer = ObsNormalizer(NUM_OBS)
+        self.distribution = Distribution(NUM_ACTIONS)
+        self.mlp = torch.nn.Sequential(
+            torch.nn.Linear(NUM_OBS, 512),
+            torch.nn.ELU(),
+            torch.nn.Linear(512, 256),
+            torch.nn.ELU(),
+            torch.nn.Linear(256, 128),
+            torch.nn.ELU(),
+            torch.nn.Linear(128, NUM_ACTIONS),
+        )
+
+    def forward(self, obs: torch.Tensor) -> torch.Tensor:
+        return self.mlp(self.obs_normalizer(obs))
+
+
+class ActorMLP(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.net = ActorNet()
+
+    def forward(self, obs: torch.Tensor) -> torch.Tensor:
+        return self.net(obs)
+
+
+def load_trained_policy(path: Path) -> ActorMLP:
+    checkpoint = torch.load(path, map_location="cpu")
+
+    policy = ActorMLP()
+    actor_state_dict = checkpoint["actor_state_dict"]
+
+    if not any(key.startswith("net.") for key in actor_state_dict):
+        actor_state_dict = {f"net.{key}": value for key, value in actor_state_dict.items()}
+
+    policy.load_state_dict(actor_state_dict)
+    policy.eval()
+    return policy
 
 class Controller(DashboardMixin):
     def __init__(self) -> None:
         self.remote_controller = RemoteController()
         self.use_remote_controller = True
-        self.policy = torch.jit.load(POLICY_PATH)
+        self.policy = load_trained_policy(POLICY_PATH)
 
         self.num_actions = NUM_ACTIONS
         self.num_obs = NUM_OBS
@@ -257,13 +316,10 @@ class Controller(DashboardMixin):
         ####################################################################################### 
 
         # TODO [7] Inference of the policy with the observation tensor                                                                                                                
-        action = None          
+        self.action = None          
 
         # This line just put it in the format expected by the robot (Do not modify)                                          
-        if action is None:
-            self.action = None
-        else:
-            self.action = action.detach().cpu().numpy().astype(np.float32).squeeze()   
+        self.action = self.action.detach().cpu().numpy().astype(np.float32).squeeze()   
 
         # TODO [8] Fill the target position using the policy output (action)                                                                                
         self.target_joint_position = None                

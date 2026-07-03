@@ -266,7 +266,7 @@ class Controller(DashboardMixin):
             self.action = action.detach().cpu().numpy().astype(np.float32).squeeze()   
 
         # TODO [8] Fill the target position using the policy output (action)                                                                                
-        self.target_position = None                
+        self.target_joint_position = None                
         # =================================================================================== #
 
 
@@ -284,8 +284,7 @@ class Controller(DashboardMixin):
         KDS = [0.5] * 12                                                                    #
         #####################################################################################
 
-        # TODO [9] Fill the PID controller with the target command (target_dof_pos) and match 
-        # the indexes beetwen PD controller and policy 
+        # TODO [9] Fill the PD controller with the target command (target_joint_pos) and match the indexes beetwen PD controller and policy 
         for i in range(12):                                                                 
             motor_idx = 0.0                                            
             self.low_cmd.motor_cmd[motor_idx].q =  0.0 # float

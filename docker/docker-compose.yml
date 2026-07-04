@@ -16,6 +16,7 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
       - ..:/workspace/SUMMER-SCHOOL-RL
+      - ../1.Training/src/unitree_go2_velocity:/opt/mjlab/src/mjlab/tasks/velocity/config/go2
       - ../logs:/opt/mjlab/logs
       - ../wandb:/opt/mjlab/wandb
       - /tmp/.X11-unix:/tmp/.X11-unix

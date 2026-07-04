@@ -42,6 +42,11 @@ wiring together pre-built functions.
 8. **Angular velocity reward** (`custom_mdp.py`) — implement `track_angular_velocity`.
 9. **Fell-over termination** (`custom_mdp.py`) — implement `bad_orientation`.
 
+To be able to run Mjlab commands while you are in the docker container navigate to
+```bash
+cd /opt/mjlab/
+```
+
 ## Train the policy
 After having completed the scripts, you will be able to launch you training with the following command
 
@@ -50,15 +55,20 @@ uv run train Mjlab-Velocity-Flat-Unitree-Go2 --env.scene.num-envs 2048 --agent.m
 ```
 
 ## Play the policy's latest checkpoint
-To see during training the latest policy behavior in Mujoco
-```bash
-uv run play Mjlab-Velocity-Flat-Unitree-Go2 --checkpoint_file <path-to-repository>/summer-school-2026-mjlab-go2/logs/rsl_rl/go2_velocity/<run-name>/model_<latest-number>.pt 
-```
+To see the latest policy behavior in Mujoco during training, it will be needed to open **a new terminal** to not stop the training.
+First navigate to the `/Tutorial_06_RL_Locomotion/docker` where the `docker-compose.yml` is located and run
 
-If you want to see more agents (robots) in parallel you can use the argument `--num.envs 10`
+```bash
+docker compose exec -w /opt/mjlab summer-school-rl bash
+```
+Now you run the following command. If you want to see more agents (robots) in parallel you can use the argument `--num.envs 10`
+
+```bash
+uv run play Mjlab-Velocity-Flat-Unitree-Go2 --checkpoint_file /workspace/SUMMER-SCHOOL-RL/logs/rsl_rl/go2_velocity/<run-name>/model_<latest-number>.pt 
+```
 
 ## Play an already trained policy
 Due to the time limitation of the tutorial and given many of you may not have a capable gpu, you can visualise the end result with this command with an already trained policy (50000 max iterations) based on the same configuration.
 ```bash
-uv run play Mjlab-Velocity-Flat-Unitree-Go2 --checkpoint_file <path-to-repository>/summer-school-2026-mjlab-go2/trained_model.pt 
+uv run play Mjlab-Velocity-Flat-Unitree-Go2 --checkpoint_file /workspace/SUMMER-SCHOOL-RL/1.Training/trained_model.pt 
 ```

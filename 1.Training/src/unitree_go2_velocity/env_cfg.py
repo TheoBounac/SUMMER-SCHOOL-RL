@@ -117,8 +117,8 @@ def unitree_go2_flat_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     #   - func=mdp.joint_vel_rel
     #   - noise: joint velocities are noisier than positions, so we need to use a
     #     wider Unoise range than joint_pos uses (+/-1.5 rad/s)
-    #   - scale: A value that brings joint velocities to roughfggddgdgdggd v0ly the
-    #     same order of magnitude as the other observation terms (e.g. ~0.05)
+    #   - scale: A value that brings joint velocities to the
+    #     same order of magnitude as the other observation terms (0.05)
     # Add it with ObservationTermCfg(...) right after the joint_pos term.
     raise NotImplementedError("TODO: add a 'joint_vel' observation term to actor_terms (see comment above)")
 
@@ -434,7 +434,7 @@ def unitree_go2_flat_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
 
     terminations = {
         "time_out": TerminationTermCfg(func=mdp.time_out, time_out=True),
-        # func points at custom_mdp.bad_orientation, which is Exercise 8 (see
+        # func points at custom_mdp.bad_orientation, which is Exercise 9 (see
         # custom_mdp.py) — the wiring here is already done for you, but the
         # function body raises NotImplementedError until you write it.
         "fell_over": TerminationTermCfg(

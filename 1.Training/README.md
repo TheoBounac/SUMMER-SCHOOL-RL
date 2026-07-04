@@ -61,7 +61,7 @@ First navigate to the `/Tutorial_06_RL_Locomotion/docker` where the `docker-comp
 ```bash
 docker compose exec -w /opt/mjlab summer-school-rl bash
 ```
-Now you run the following command. If you want to see more agents (robots) in parallel you can use the argument `--num.envs 10`
+Now you can run the following command. If you want to see more agents (robots) in parallel you can use the argument `--num.envs 10`
 
 ```bash
 uv run play Mjlab-Velocity-Flat-Unitree-Go2 --checkpoint_file /workspace/SUMMER-SCHOOL-RL/logs/rsl_rl/go2_velocity/<run-name>/model_<latest-number>.pt 

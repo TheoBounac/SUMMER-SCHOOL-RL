@@ -249,12 +249,8 @@ class Controller(DashboardMixin):
                                                                                                   #
         ###########################################################################################
 
-        #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
-        # !!! ALL OBSERVATIONS MUST BE np.array(..., dtype=np.float32) !!!
-        #_\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
-
         # TODO [1] Read base angular velocity from IMU
-        self.ang_vel = None
+        self.ang_vel = None # MUST BE np.array(..., dtype=np.float32)
 
         # TODO [2] Read quaternion from IMU and Compute gravity orientation from quaternion
         self.gravity = None
@@ -345,7 +341,7 @@ class Controller(DashboardMixin):
 
         # TODO [9] Fill the PD controller with the target command (target_joint_pos) and match the indexes beetwen PD controller and policy 
         for i in range(12):                                                                 
-            motor_idx = 0.0                                            
+            motor_idx = 0                                        
             self.low_cmd.motor_cmd[motor_idx].q =  0.0 # float
             self.low_cmd.motor_cmd[motor_idx].dq = 0.0 # float                                 
             self.low_cmd.motor_cmd[motor_idx].kp = 0.0 # float                              
